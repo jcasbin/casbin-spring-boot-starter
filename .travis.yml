@@ -1,0 +1,21 @@
+language: java
+jdk: oraclejdk8
+services:
+  - mysql
+  - redis-server
+before_install:
+  - sudo mysql -e "create database `casbin` character set 'utf8' collate 'utf8_general_ci';"
+install: true
+before_script:
+  - chmod +x ./gradlew
+script:
+  - ./gradlew build -s
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/

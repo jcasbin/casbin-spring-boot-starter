@@ -1,0 +1,22 @@
+ext {
+    getVersionCode = this.&getVersionCode
+    alreadyGenerated = false
+}
+
+def getVersionCode() {
+    def versionFile = file('version.properties')
+    if (versionFile.canRead()) {
+        def versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionFile))
+        def versionCode = versionProps.getProperty("VERSION_CODE")
+        def runTasks = gradle.startParameter.taskNames
+        if ('bintrayUpload' in runTasks && !alreadyGenerated) {
+            versionProps['VERSION_CODE'] = ++versionCode
+            versionProps.store(versionFile.newWriter(), null)
+            alreadyGenerated = true
+        }
+        return versionCode
+    } else {
+        throw new GradleException("Could not find version.properties!")
+    }
+}

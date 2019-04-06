@@ -1,0 +1,38 @@
+plugins {
+    id 'org.springframework.boot' version '2.1.4.RELEASE'
+    id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+apply from: "jacoco.gradle"
+
+group = 'org.casbin'
+version getVersionCode()
+sourceCompatibility = '1.8'
+
+bootJar.enabled = false
+jar.enabled = true
+
+repositories {
+    mavenLocal()
+    maven { url "https://maven.aliyun.com/repository/public/" }
+    mavenCentral()
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    compile 'org.casbin:jcasbin:1.2.0'
+    compile 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    
+    testCompileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testRuntimeOnly 'mysql:mysql-connector-java:5.1.47'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
