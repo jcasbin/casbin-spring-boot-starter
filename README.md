@@ -1,5 +1,12 @@
 # Casbin Spring Boot Starter
 
+[![Codecov branch](https://img.shields.io/codecov/c/github/fangzhengjin/casbin-spring-boot-starter/master.svg?logo=codecov&style=flat-square)](https://codecov.io/gh/fangzhengjin/casbin-spring-boot-starter)
+[![Build Status](https://img.shields.io/travis/com/fangzhengjin/casbin-spring-boot-starter/master.svg?style=flat-square)](https://travis-ci.com/fangzhengjin/casbin-spring-boot-starter)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.fangzhengjin/casbin-spring-boot-starter.svg?style=flat-square&color=brightgreen)](https://maven-badges.herokuapp.com/maven-central/com.github.fangzhengjin/casbin-spring-boot-starter/)
+[![Bintray](https://img.shields.io/bintray/v/fangzhengjin/maven/casbin-spring-boot-starter.svg?style=flat-square&color=blue)](https://bintray.com/fangzhengjin/maven/casbin-spring-boot-starter/_latestVersion)
+[![License](https://img.shields.io/github/license/fangzhengjin/casbin-spring-boot-starter.svg?style=flat-square&color=blue)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+[![SpringBootVersion](https://img.shields.io/badge/SpringBoot-2.1.4-heightgreen.svg?style=flat-square)](https://spring.io/projects/spring-boot)
+
 [![](https://raw.githubusercontent.com/casbin/jcasbin/master/casbin-logo.png)](https://casbin.org)
 
 #### 传送门: [**jCasbin**](https://github.com/casbin/jcasbin)
