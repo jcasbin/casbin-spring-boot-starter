@@ -5,6 +5,7 @@ plugins {
 
 apply plugin: 'io.spring.dependency-management'
 apply from: "jacoco.gradle"
+apply from: "version.gradle"
 
 group = 'org.casbin'
 version getVersionCode()
@@ -29,8 +30,8 @@ dependencies {
     compile 'org.casbin:jcasbin:1.2.0'
     compile 'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    
-    testCompileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testRuntimeOnly 'mysql:mysql-connector-java:5.1.47'
