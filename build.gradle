@@ -1,15 +1,18 @@
 plugins {
     id 'org.springframework.boot' version '2.1.4.RELEASE'
+    id "com.jfrog.bintray" version "1.8.4"
     id 'java'
 }
 
 apply plugin: 'io.spring.dependency-management'
-apply from: "jacoco.gradle"
 apply from: "version.gradle"
+apply from: "jacoco.gradle"
+apply from: "binary.gradle"
 
 group = 'org.casbin'
 version getVersionCode()
 sourceCompatibility = '1.8'
+compileJava.options.encoding = 'UTF-8'
 
 bootJar.enabled = false
 jar.enabled = true

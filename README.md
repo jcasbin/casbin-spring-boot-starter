@@ -28,7 +28,15 @@ Casbin Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成[jC
 ```groovy
 implementation 'com.github.fangzhengjin:casbin-spring-boot-starter:version'
 ```
-2. 添加配置
+2. 在需要使用的地方注入Enforcer
+```java
+@Component
+public class Test{
+    @Autowired
+    private Enforcer enforcer;
+}
+```
+3. 添加配置
 ```yaml
 casbin:
   #是否开启Casbin,默认开启
@@ -56,7 +64,7 @@ casbin:
   #开启Watcher后需手动添加spring-boot-starter-data-redis依赖
   watcherType: redis
 ```
-3. 最简配置
+4. 最简配置
 ```yaml
 casbin:
   #如果您使用的模型配置文件位于此地址,则无需任何配置
