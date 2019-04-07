@@ -42,6 +42,7 @@ public class RedisWatcher implements Watcher {
     public void updatePolicy(String message) {
         if (message.contains(REDIS_WATCHER_UUID)) {
             logger.info("This casbin policy update notification comes from the current redis watcher instance: {}", REDIS_WATCHER_UUID);
+            return;
         } else {
             logger.info(message);
         }
