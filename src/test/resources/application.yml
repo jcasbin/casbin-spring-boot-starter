@@ -19,6 +19,7 @@ casbin:
   #该配置项仅在storeType设定为file时生效
   policy: classpath:casbin/policy.csv
   #是否开启CasbinWatcher机制,默认不开启
+  #如开启该机制,则storeType必须为jdbc,否则该配置无效
   enableWatcher: true
   #CasbinWatcher通知方式,默认使用Redis进行通知同步,暂时仅支持Redis
   #开启Watcher后需手动添加spring-boot-starter-data-redis依赖

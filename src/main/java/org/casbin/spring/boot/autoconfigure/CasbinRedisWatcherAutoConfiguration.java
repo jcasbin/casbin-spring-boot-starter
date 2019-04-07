@@ -32,7 +32,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @Configuration
 @EnableConfigurationProperties(CasbinProperties.class)
 @AutoConfigureAfter({RedisAutoConfiguration.class})
-@ConditionalOnExpression("${casbin.enableWatcher:true} && '${casbin.watcherType}'.equalsIgnoreCase('redis') ")
+@ConditionalOnExpression("'jdbc'.equalsIgnoreCase('${casbin.storeType}') && ${casbin.enableWatcher:true} && 'redis'.equalsIgnoreCase('${casbin.watcherType}') ")
 public class CasbinRedisWatcherAutoConfiguration {
 
     public final static String CASBIN_POLICY_TOPIC = "CASBIN_POLICY_TOPIC";

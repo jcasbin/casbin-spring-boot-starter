@@ -5,6 +5,8 @@ import org.casbin.jcasbin.persist.Watcher;
 import org.casbin.spring.boot.autoconfigure.CasbinRedisWatcherAutoConfiguration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
+import java.util.UUID;
+
 /**
  * @author fangzhengjin
  * @version V1.0
@@ -17,9 +19,11 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 public class RedisWatcher implements Watcher {
     private Runnable updateCallback;
     private StringRedisTemplate stringRedisTemplate;
+    private final static String REDIS_WATCHER_UUID = UUID.randomUUID().toString();
 
     public RedisWatcher(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
+        logger.info("Current casbin redis watcher uuid: {}", REDIS_WATCHER_UUID);
     }
 
     @Override
@@ -31,12 +35,17 @@ public class RedisWatcher implements Watcher {
     public void update() {
         stringRedisTemplate.convertAndSend(
                 CasbinRedisWatcherAutoConfiguration.CASBIN_POLICY_TOPIC,
-                "Casbin policy has a new version!"
+                "Casbin policy has a new version from redis watcher: " + REDIS_WATCHER_UUID
         );
     }
 
     public void updatePolicy(String message) {
-        logger.info(message);
+        if (message.contains(REDIS_WATCHER_UUID)) {
+            logger.info("This casbin policy update notification comes from the current redis watcher instance: {}", REDIS_WATCHER_UUID);
+        } else {
+            logger.info(message);
+        }
+
         updateCallback.run();
         logger.info("Casbin policy updated.");
     }

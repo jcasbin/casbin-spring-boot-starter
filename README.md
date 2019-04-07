@@ -56,18 +56,29 @@ casbin:
   useDefaultModelIfModelNotSetting: true
   #本地策略配置文件地址,约定默认读取位置:classpath:casbin/policy.csv
   #如默认位置未找到配置文件，将会抛出异常
-  #该配置项仅在storeType设定为file时生效
+  #该配置项仅在casbin.storeType设定为file时生效
   policy: classpath:casbin/policy.csv
   #是否开启CasbinWatcher机制,默认不开启
+  #如开启该机制,则casbin.storeType必须为jdbc,否则该配置无效
   enableWatcher: false
   #CasbinWatcher通知方式,默认使用Redis进行通知同步,暂时仅支持Redis
   #开启Watcher后需手动添加spring-boot-starter-data-redis依赖
   watcherType: redis
 ```
 4. 最简配置
+
+4.1 不使用其他附加组件配置
 ```yaml
 casbin:
   #如果您使用的模型配置文件位于此地址,则无需任何配置
   model: classpath:casbin/model.conf
+```
+4.2 开启Watcher
+```yaml
+casbin:
+  #如果您使用的模型配置文件位于此地址,则无需该配置
+  model: classpath:casbin/model.conf
+  #开启Watcher后,默认使用RedisWatcher需手动添加spring-boot-starter-data-redis依赖
+  enableWatcher: true
 ```
 ##### 注意: 如果您没有设置其他数据源,或为H2设定存储文件位置,则默认使用H2将数据存储于内存中
