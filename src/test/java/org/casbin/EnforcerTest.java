@@ -51,14 +51,4 @@ public class EnforcerTest {
         Assert.assertEquals(4, enforcer.getNamedPolicy("p").size());
 
     }
-
-    @Test
-    public void test2() {
-        enforcer.clearPolicy();
-
-        Assert.assertFalse(enforcer.enforce("bob", "data1", "read"));
-        Assert.assertFalse(enforcer.enforce("alice", "data2", "read"));
-        Assert.assertFalse(enforcer.enforce("alice", "data2", "write"));
-
-    }
 }
