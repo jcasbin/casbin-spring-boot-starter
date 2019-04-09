@@ -62,7 +62,7 @@ publishing {
                     developerConnection = POM_SCM_DEV_CONNECTION
                 }
                 issueManagement {
-                    system = 'github'
+                    system = 'Github'
                     url = ISSUE_URL
                 }
                 developers {
@@ -70,10 +70,11 @@ publishing {
                         id = POM_DEVELOPER_ID
                         name = POM_DEVELOPER_NAME
                         email = POM_DEVELOPER_EMAIL
+                        url = POM_DEVELOPER_URL
                     }
                 }
-                license {
-                    licenses {
+                licenses {
+                    license {
                         name = POM_LICENCE_NAME
                         url = POM_LICENCE_URL
                         distribution = POM_LICENCE_DIST
@@ -96,6 +97,8 @@ bintray {
         repo = 'maven'
         //包名
         name = ARTIFACT_ID
+        //JCenter组织
+        userOrg = ORGANIZATION
         //描述
         desc = POM_DESCRIPTION
         //站点地址

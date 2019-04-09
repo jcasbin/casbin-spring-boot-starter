@@ -11,7 +11,13 @@ def getVersionCode() {
         def versionCode = versionProps.getProperty("VERSION_CODE")
         def runTasks = gradle.startParameter.taskNames
         if ('bintrayUpload' in runTasks && !alreadyGenerated) {
-            versionProps['VERSION_CODE'] = ++versionCode
+            def versionArgs = versionCode.split("\\.")
+            if (versionArgs[versionArgs.length - 1] == "#") {
+                versionArgs[versionArgs.length - 1] = 0
+            } else {
+                versionArgs[versionArgs.length - 1] = ++versionArgs[versionArgs.length - 1] as Integer
+            }
+            versionProps['VERSION_CODE'] = versionArgs.join(".")
             versionProps.store(versionFile.newWriter(), null)
             alreadyGenerated = true
         }
