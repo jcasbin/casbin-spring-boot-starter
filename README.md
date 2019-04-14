@@ -1,34 +1,36 @@
 # Casbin Spring Boot Starter
 
-[![Codecov branch](https://img.shields.io/codecov/c/github/jcasbin/casbin-spring-boot-starter/master.svg?logo=codecov&style=flat-square)](https://codecov.io/gh/jcasbin/casbin-spring-boot-starter)
-[![Build Status](https://img.shields.io/travis/com/jcasbin/casbin-spring-boot-starter/master.svg?style=flat-square)](https://travis-ci.com/jcasbin/casbin-spring-boot-starter)
-[![Maven Central](https://img.shields.io/maven-central/v/org.casbin/casbin-spring-boot-starter.svg?style=flat-square&color=brightgreen)](https://maven-badges.herokuapp.com/maven-central/org.casbin/casbin-spring-boot-starter/)
-[![Bintray](https://img.shields.io/bintray/v/casbin/maven/casbin-spring-boot-starter.svg?style=flat-square&color=blue)](https://bintray.com/casbin/maven/casbin-spring-boot-starter/_latestVersion)
-[![License](https://img.shields.io/github/license/jcasbin/casbin-spring-boot-starter.svg?style=flat-square&color=blue)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+[![Codecov branch](https://img.shields.io/codecov/c/github/jcasbin/casbin-spring-boot-starter/master.svg?logo=codecov&style=flat-square)](https:/ /codecov.io/gh/jcasbin/casbin-spring-boot-starter)
+[![Build Status](https://img.shields.io/travis/com/jcasbin/casbin-spring-boot-starter/master.svg?style=flat-square)](https://travis-ci .com/jcasbin/casbin-spring-boot-starter)
+[![Maven Central](https://img.shields.io/maven-central/v/org.casbin/casbin-spring-boot-starter.svg?style=flat-square&color=brightgreen)](https:/ /maven-badges.herokuapp.com/maven-central/org.casbin/casbin-spring-boot-starter/)
+[![Bintray](https://img.shields.io/bintray/v/casbin/maven/casbin-spring-boot-starter.svg?style=flat-square&color=blue)](https://bintray. Com/casbin/maven/casbin-spring-boot-starter/_latestVersion)
+[![License](https://img.shields.io/github/license/jcasbin/casbin-spring-boot-starter.svg?style=flat-square&color=blue)](http://www.apache. Org/licenses/LICENSE-2.0.txt)
 [![SpringBootVersion](https://img.shields.io/badge/SpringBoot-2.1.4-heightgreen.svg?style=flat-square)](https://spring.io/projects/spring-boot)
 
 [![](https://raw.githubusercontent.com/casbin/jcasbin/master/casbin-logo.png)](https://casbin.org)
 
-#### 传送门: [**jCasbin**](https://github.com/casbin/jcasbin)
+#### English|[中文](https://github.com/casbin/jcasbin/README_CN.md)
 
-Casbin Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成[jCasbin](https://github.com/casbin/jcasbin)。
+Casbin Spring Boot Starter is designed to help you easily integrate [jCasbin] (https://github.com/casbin/jcasbin) into your Spring Boot project.
 
-## 如何使用
-1. 在 Spring Boot 项目中加入```casbin-spring-boot-starter```依赖
+## how to use
+1. Add ```casbin-spring-boot-starter``` to the Spring Boot project.
 
 ```Maven```
+
 ```xml
 <dependency>
-   <groupId>org.casbin</groupId>
-   <artifactId>casbin-spring-boot-starter</artifactId>
-   <version>version</version>
+   <groupId>org.casbin</groupId>
+   <artifactId>casbin-spring-boot-starter</artifactId>
+   <version>version</version>
 </dependency>
 ```
 ```Gradle```
+
 ```groovy
-implementation 'org.casbin:casbin-spring-boot-starter:version'
+Implementation 'org.casbin:casbin-spring-boot-starter:version'
 ```
-2. 在需要使用的地方注入Enforcer
+2. Inject the Enforcer where you need to use it
 ```java
 @Component
 public class Test{
@@ -36,49 +38,48 @@ public class Test{
     private Enforcer enforcer;
 }
 ```
-3. 添加配置
+3. Add configuration
 ```yaml
-casbin:
-  #是否开启Casbin,默认开启
-  enableCasbin: true
-  #是否开启策略自动保存，如适配器支持该功能，默认开启
-  autoSave: true
-  #存储类型[file,jdbc]，目前支持的jdbc数据库[mysql(mariadb),h2,oracle,postgresql]
-  #欢迎编写并提交您所使用的jdbc适配器，参见：org.casbin.adapter.OracleAdapter
-  #jdbc适配器将主动寻找您在spring.datasource配置的数据源信息
-  #默认使用jdbc,并使用内置h2数据库进行内存存储
-  storeType: jdbc
-  #数据源初始化策略[create(自动创建数据表,如已创建则不再进行初始化),never(始终不进行初始化)]
-  initializeSchema: create
-  #本地模型配置文件地址,约定默认读取位置:classpath:casbin/model.conf
-  model: classpath:casbin/model.conf
-  #如默认位置未找到模型配置文件,且casbin.model未正确设置,则使用内置默认rbac模型,默认生效
-  useDefaultModelIfModelNotSetting: true
-  #本地策略配置文件地址,约定默认读取位置:classpath:casbin/policy.csv
-  #如默认位置未找到配置文件，将会抛出异常
-  #该配置项仅在casbin.storeType设定为file时生效
-  policy: classpath:casbin/policy.csv
-  #是否开启CasbinWatcher机制,默认不开启
-  #如开启该机制,则casbin.storeType必须为jdbc,否则该配置无效
-  enableWatcher: false
-  #CasbinWatcher通知方式,默认使用Redis进行通知同步,暂时仅支持Redis
-  #开启Watcher后需手动添加spring-boot-starter-data-redis依赖
-  watcherType: redis
+Casbin:
+  #Whether to enable Casbin, it is enabled by default.
+  enableCasbin: true
+  #Whether to enable automatic policy saving, if the adapter supports this function, it is enabled by default.
+  autoSave: true
+  #Storage type [file, jdbc], currently supported jdbc database [mysql (mariadb), h2, oracle, postgresql]
+  #Welcome to write and submit the jdbc adapter you are using, see: org.casbin.adapter.OracleAdapter
+  #The jdbc adapter will actively look for the data source information you configured in spring.datasource
+  #Default use jdbc, and use the built-in h2 database for memory storage
+  storeType: jdbc
+  #Data source initialization policy [create (automatically create data table, no longer initialized if created), never (always do not initialize)]
+  initializeSchema: create
+  #Local model configuration file address, the default reading location: classpath: casbin/model.conf
+  Model: classpath:casbin/model.conf
+  #If the model configuration file is not found in the default location and casbin.model is not set correctly, the built-in default rbac model is used, which takes effect by default.
+  useDefaultModelIfModelNotSetting: true
+  #Local policy configuration file address, the default reading location: classpath: casbin/policy.csv
+  #If the configuration file is not found in the default location, an exception will be thrown.
+  #This configuration item takes effect only when casbin.storeType is set to file.
+  Policy: classpath:casbin/policy.csv
+  #Whether to enable the CasbinWatcher mechanism, the default is not enabled.
+  #If the mechanism is enabled, casbin.storeType must be jdbc, otherwise the configuration is invalid.
+  enableWatcher: false
+  #CasbinWatcher notification mode, defaults to use Redis for notification synchronization, temporarily only supports Redis
+  #After opening Watcher, you need to manually add spring-boot-starter-data-redis dependency.
+  watcherType: redis
 ```
-4. 最简配置
-
-4.1 不使用其他附加组件配置
+4. The simplest configuration
+- Do not use other add-on configurations
 ```yaml
-casbin:
-  #如果您使用的模型配置文件位于此地址,则无需任何配置
-  model: classpath:casbin/model.conf
+Casbin:
+  #If you are using a model profile at this address, no configuration is required
+  Model: classpath:casbin/model.conf
 ```
-4.2 开启Watcher
+-  Turn on Watcher
 ```yaml
-casbin:
-  #如果您使用的模型配置文件位于此地址,则无需该配置
-  model: classpath:casbin/model.conf
-  #开启Watcher后,默认使用RedisWatcher需手动添加spring-boot-starter-data-redis依赖
-  enableWatcher: true
+Casbin:
+  #If the model profile you are using is located at this address, you do not need this configuration
+  Model: classpath:casbin/model.conf
+  #When you open Watcher, the default use of RedisWatcher requires manual addition of spring-boot-starter-data-redis dependency.
+  enableWatcher: true
 ```
-##### 注意: 如果您没有设置其他数据源,或为H2设定存储文件位置,则默认使用H2将数据存储于内存中
+##### Note: If you do not set another data source, or set the storage file location for H2, the data is stored in memory by default using H2.
