@@ -11,7 +11,7 @@
 
 #### English|[中文](https://github.com/casbin/jcasbin/README_CN.md)
 
-Casbin Spring Boot Starter is designed to help you easily integrate [jCasbin] (https://github.com/casbin/jcasbin) into your Spring Boot project.
+Casbin Spring Boot Starter is designed to help you easily integrate [jCasbin](https://github.com/casbin/jcasbin) into your Spring Boot project.
 
 ## how to use
 1. Add ```casbin-spring-boot-starter``` to the Spring Boot project.
