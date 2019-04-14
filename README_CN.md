@@ -9,7 +9,7 @@
 
 [![](https://raw.githubusercontent.com/casbin/jcasbin/master/casbin-logo.png)](https://casbin.org)
 
-# [English](https://github.com/casbin/jcasbin/README.md)|中文
+# [English](https://github.com/jcasbin/casbin-spring-boot-starter)|中文
 
 Casbin Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成[jCasbin](https://github.com/casbin/jcasbin)。
 
