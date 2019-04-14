@@ -67,13 +67,13 @@ casbin:
 ```
 4. 最简配置
 
-4.1 不使用其他附加组件配置
+- 不使用其他附加组件配置
 ```yaml
 casbin:
   #如果您使用的模型配置文件位于此地址,则无需任何配置
   model: classpath:casbin/model.conf
 ```
-4.2 开启Watcher
+- 开启Watcher
 ```yaml
 casbin:
   #如果您使用的模型配置文件位于此地址,则无需该配置
