@@ -28,7 +28,7 @@ Casbin Spring Boot Starter is designed to help you easily integrate [jCasbin](ht
 ```Gradle```
 
 ```groovy
-Implementation 'org.casbin:casbin-spring-boot-starter:version'
+implementation 'org.casbin:casbin-spring-boot-starter:version'
 ```
 2. Inject the Enforcer where you need to use it
 ```java
