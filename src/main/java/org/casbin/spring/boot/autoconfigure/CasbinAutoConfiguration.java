@@ -14,6 +14,7 @@ import org.casbin.spring.boot.autoconfigure.properties.CasbinDataSourceInitializ
 import org.casbin.spring.boot.autoconfigure.properties.CasbinProperties;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
+import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -42,7 +44,7 @@ import java.util.List;
 @Configuration
 @EnableConfigurationProperties(CasbinProperties.class)
 @AutoConfigureAfter({JdbcTemplateAutoConfiguration.class, CasbinRedisWatcherAutoConfiguration.class})
-@ConditionalOnProperty(name = "casbin.enableCasbin")
+@ConditionalOnExpression("${casbin.enableCasbin:true}")
 public class CasbinAutoConfiguration {
 
     /**
@@ -90,7 +92,7 @@ public class CasbinAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public Enforcer enforcer(CasbinProperties properties, Adapter adapter, List<Watcher> watchers) {
+    public Enforcer enforcer(CasbinProperties properties, Adapter adapter, @Nullable List<Watcher> watchers) {
         Model model = new Model();
         try {
             String modelRealPath = properties.getModelRealPath();
@@ -115,7 +117,7 @@ public class CasbinAutoConfiguration {
         Enforcer enforcer = new Enforcer(model, adapter);
         enforcer.enableAutoSave(properties.isAutoSave());
 
-        if (watchers.size() > 0) {
+        if (watchers != null && watchers.size() > 0) {
             Watcher watcher = watchers.get(0);
             logger.info("Casbin set watcher: {}", watcher.getClass().getName());
             enforcer.setWatcher(watcher);

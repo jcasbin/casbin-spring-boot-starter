@@ -40,7 +40,7 @@ public class Test{
 ```
 3. Add configuration
 ```yaml
-Casbin:
+casbin:
   #Whether to enable Casbin, it is enabled by default.
   enableCasbin: true
   #Whether to enable automatic policy saving, if the adapter supports this function, it is enabled by default.
@@ -70,13 +70,13 @@ Casbin:
 4. The simplest configuration
 - Do not use other add-on configurations
 ```yaml
-Casbin:
+casbin:
   #If you are using a model profile at this address, no configuration is required
   Model: classpath:casbin/model.conf
 ```
 -  Turn on Watcher
 ```yaml
-Casbin:
+casbin:
   #If the model profile you are using is located at this address, you do not need this configuration
   Model: classpath:casbin/model.conf
   #When you open Watcher, the default use of RedisWatcher requires manual addition of spring-boot-starter-data-redis dependency.
