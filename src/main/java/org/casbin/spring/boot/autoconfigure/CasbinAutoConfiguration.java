@@ -14,6 +14,7 @@ import org.casbin.spring.boot.autoconfigure.properties.CasbinDataSourceInitializ
 import org.casbin.spring.boot.autoconfigure.properties.CasbinProperties;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
@@ -42,7 +43,7 @@ import java.util.List;
 @Configuration
 @EnableConfigurationProperties(CasbinProperties.class)
 @AutoConfigureAfter({JdbcTemplateAutoConfiguration.class, CasbinRedisWatcherAutoConfiguration.class})
-@ConditionalOnProperty(name = "casbin.enableCasbin")
+@ConditionalOnExpression("${casbin.enableCasbin:true}")
 public class CasbinAutoConfiguration {
 
     /**
