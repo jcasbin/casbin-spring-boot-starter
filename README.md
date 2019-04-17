@@ -28,7 +28,7 @@ Casbin Spring Boot Starter is designed to help you easily integrate [jCasbin](ht
 ```Gradle```
 
 ```groovy
-Implementation 'org.casbin:casbin-spring-boot-starter:version'
+implementation 'org.casbin:casbin-spring-boot-starter:version'
 ```
 2. Inject the Enforcer where you need to use it
 ```java
@@ -53,13 +53,13 @@ casbin:
   #Data source initialization policy [create (automatically create data table, no longer initialized if created), never (always do not initialize)]
   initializeSchema: create
   #Local model configuration file address, the default reading location: classpath: casbin/model.conf
-  Model: classpath:casbin/model.conf
+  model: classpath:casbin/model.conf
   #If the model configuration file is not found in the default location and casbin.model is not set correctly, the built-in default rbac model is used, which takes effect by default.
   useDefaultModelIfModelNotSetting: true
   #Local policy configuration file address, the default reading location: classpath: casbin/policy.csv
   #If the configuration file is not found in the default location, an exception will be thrown.
   #This configuration item takes effect only when casbin.storeType is set to file.
-  Policy: classpath:casbin/policy.csv
+  policy: classpath:casbin/policy.csv
   #Whether to enable the CasbinWatcher mechanism, the default is not enabled.
   #If the mechanism is enabled, casbin.storeType must be jdbc, otherwise the configuration is invalid.
   enableWatcher: false
@@ -72,13 +72,13 @@ casbin:
 ```yaml
 casbin:
   #If you are using a model profile at this address, no configuration is required
-  Model: classpath:casbin/model.conf
+  model: classpath:casbin/model.conf
 ```
 -  Turn on Watcher
 ```yaml
 casbin:
   #If the model profile you are using is located at this address, you do not need this configuration
-  Model: classpath:casbin/model.conf
+  model: classpath:casbin/model.conf
   #When you open Watcher, the default use of RedisWatcher requires manual addition of spring-boot-starter-data-redis dependency.
   enableWatcher: true
 ```
