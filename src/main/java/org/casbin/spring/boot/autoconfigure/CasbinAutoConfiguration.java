@@ -29,7 +29,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
-import java.util.List;
 
 /**
  * @author fangzhengjin
@@ -92,7 +91,7 @@ public class CasbinAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public Enforcer enforcer(CasbinProperties properties, Adapter adapter, @Nullable List<Watcher> watchers) {
+    public Enforcer enforcer(CasbinProperties properties, Adapter adapter, @Nullable Watcher watcher) {
         Model model = new Model();
         try {
             String modelRealPath = properties.getModelRealPath();
@@ -116,13 +115,10 @@ public class CasbinAutoConfiguration {
         }
         Enforcer enforcer = new Enforcer(model, adapter);
         enforcer.enableAutoSave(properties.isAutoSave());
-
-        if (watchers != null && watchers.size() > 0) {
-            Watcher watcher = watchers.get(0);
+        if (watcher != null) {
             logger.info("Casbin set watcher: {}", watcher.getClass().getName());
             enforcer.setWatcher(watcher);
         }
-
         return enforcer;
     }
 
