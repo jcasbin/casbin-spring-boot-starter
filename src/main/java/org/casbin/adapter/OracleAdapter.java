@@ -20,9 +20,9 @@ public class OracleAdapter extends JdbcAdapter {
             "  V3 VARCHAR2(255) DEFAULT NULL ," +
             "  V4 VARCHAR2(255) DEFAULT NULL ," +
             "  V5 VARCHAR2(255) DEFAULT NULL" +
-            ");";
-    private final static String DROP_TABLE_SQL = "DROP TABLE CASBIN_RULE;";
-    private final static String CHECK_TABLE_EXIST = "SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = UPPER('CASBIN_RULE');";
+            ")";
+    private final static String DROP_TABLE_SQL = "DROP TABLE CASBIN_RULE";
+    private final static String CHECK_TABLE_EXIST = "SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = UPPER('CASBIN_RULE')";
 
     public OracleAdapter(JdbcTemplate jdbcTemplate, boolean autoCreateTable) {
         super(jdbcTemplate, autoCreateTable);
