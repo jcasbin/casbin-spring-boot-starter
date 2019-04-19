@@ -34,11 +34,11 @@ public class JdbcAdapter implements Adapter {
             "    v3    varchar(255) DEFAULT NULL," +
             "    v4    varchar(255) DEFAULT NULL," +
             "    v5    varchar(255) DEFAULT NULL" +
-            ");";
-    private final static String DROP_TABLE_SQL = "DROP TABLE IF EXISTS casbin_rule;";
-    private final static String DELETE_TABLE_CONTENT_SQL = "DELETE FROM casbin_rule;";
-    private final static String LOAD_POLICY_SQL = "SELECT * FROM casbin_rule;";
-    private final static String INSERT_POLICY_SQL = "INSERT INTO casbin_rule VALUES(?, ?, ?, ?, ?, ?, ?);";
+            ")";
+    private final static String DROP_TABLE_SQL = "DROP TABLE IF EXISTS casbin_rule";
+    private final static String DELETE_TABLE_CONTENT_SQL = "DELETE FROM casbin_rule";
+    private final static String LOAD_POLICY_SQL = "SELECT * FROM casbin_rule";
+    private final static String INSERT_POLICY_SQL = "INSERT INTO casbin_rule VALUES(?, ?, ?, ?, ?, ?, ?)";
     private final static String DELETE_POLICY_SQL = "DELETE FROM casbin_rule WHERE ptype = ? ";
 
     protected JdbcTemplate jdbcTemplate;
