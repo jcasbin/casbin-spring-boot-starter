@@ -6,7 +6,7 @@
 [![Bintray](https://img.shields.io/bintray/v/casbin/maven/casbin-spring-boot-starter.svg?style=flat-square&color=blue)](https://bintray.com/casbin/maven/casbin-spring-boot-starter/_latestVersion)
 [![License](https://img.shields.io/github/license/jcasbin/casbin-spring-boot-starter.svg?style=flat-square&color=blue)](http://www.apache.org/licenses/LICENSE-2.0.txt)
 [![SpringBootVersion](https://img.shields.io/badge/SpringBoot-2.1.4-heightgreen.svg?style=flat-square)](https://spring.io/projects/spring-boot)
-[![JCasbinVersion](https://img.shields.io/badge/JCasbinVersion-1.3.+-heightgreen.svg?style=flat-square)](https://casbin.org)
+[![JCasbinVersion](https://img.shields.io/badge/JCasbinVersion-1.3.0-heightgreen.svg?style=flat-square)](https://casbin.org)
 
 [![](https://raw.githubusercontent.com/casbin/jcasbin/master/casbin-logo.png)](https://casbin.org)
 
