@@ -1,6 +1,8 @@
 package org.casbin.spring.boot.autoconfigure;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.sql.DataSource;
+
+import org.casbin.adapter.DB2Adapter;
 import org.casbin.adapter.JdbcAdapter;
 import org.casbin.adapter.OracleAdapter;
 import org.casbin.exception.CasbinAdapterException;
@@ -28,7 +30,7 @@ import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author fangzhengjin
@@ -80,6 +82,8 @@ public class CasbinAutoConfiguration {
                 return new JdbcAdapter(jdbcTemplate, autoCreateTable);
             case "oracle":
                 return new OracleAdapter(jdbcTemplate, autoCreateTable);
+            case "db2":
+                return new DB2Adapter(jdbcTemplate, autoCreateTable);
             default:
                 throw new CasbinAdapterException("Can't find " + databaseName + " jdbc adapter");
         }
