@@ -25,17 +25,17 @@ public class DB2Adapter extends JdbcAdapter{
             "  V5 VARCHAR(255) DEFAULT NULL" +
             ")";
 
-	/**
-	 * @param jdbcTemplate
-	 * @param autoCreateTable
-	 */
+    /**
+     * @param jdbcTemplate
+     * @param autoCreateTable
+     */
     public DB2Adapter(JdbcTemplate jdbcTemplate, boolean autoCreateTable) {
         super(jdbcTemplate, autoCreateTable);
     }
 
     @Override
     protected void initTable() {
-	    try {
+        try {
             jdbcTemplate.queryForObject(CHECK_TABLE_SQL, Integer.class);
         } catch (EmptyResultDataAccessException e) {
             super.initTable();
