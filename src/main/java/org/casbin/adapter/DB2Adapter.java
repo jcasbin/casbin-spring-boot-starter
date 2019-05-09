@@ -32,25 +32,24 @@ public class DB2Adapter extends JdbcAdapter{
 	public DB2Adapter(JdbcTemplate jdbcTemplate, boolean autoCreateTable) {
 		super(jdbcTemplate, autoCreateTable);
 	}
-	
+
 	@Override
-    protected void initTable() {
+	protected void initTable() {
 		try {
 			jdbcTemplate.queryForObject(CHECK_TABLE_SQL, Integer.class);
-		}catch(EmptyResultDataAccessException e) {
+		} catch (EmptyResultDataAccessException e) {
 			super.initTable();
 		}
-       
-    }
+	}
 
-    @Override
-    protected String getInitTableSql() {
-        return INIT_TABLE_SQL;
-    }
+	@Override
+	protected String getInitTableSql() {
+		return INIT_TABLE_SQL;
+	}
 
-    @Override
-    protected String getDropTableSql() {
-        return DROP_TABLE_SQL;
-    }
+	@Override
+	protected String getDropTableSql() {
+		return DROP_TABLE_SQL;
+	}
 	
 }
