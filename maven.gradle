@@ -1,0 +1,77 @@
+apply plugin: 'maven-publish'
+
+task sourceJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+javadoc {
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        //忽略自定义标注
+        tags = [
+                "title:a:title",
+                "package:a:package",
+                "description:a:description",
+                "date:a:date"
+        ]
+    }
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            //GAV配置
+            from components.java
+            artifact sourceJar
+            artifact javadocJar
+            afterEvaluate {
+                groupId = GROUP
+                artifactId = ARTIFACT_ID
+                version = VERSION_CODE
+            }
+
+            //pom相关信息
+            pom {
+                name = ARTIFACT_ID
+                description = POM_DESCRIPTION
+                url = POM_URL
+                scm {
+                    url = POM_SCM_URL
+                    connection = POM_SCM_CONNECTION
+                    developerConnection = POM_SCM_DEV_CONNECTION
+                }
+                issueManagement {
+                    system = 'Github'
+                    url = ISSUE_URL
+                }
+                developers {
+                    developer {
+                        id = POM_DEVELOPER_ID
+                        name = POM_DEVELOPER_NAME
+                        email = POM_DEVELOPER_EMAIL
+                        url = POM_DEVELOPER_URL
+                    }
+                }
+                licenses {
+                    license {
+                        name = POM_LICENCE_NAME
+                        url = POM_LICENCE_URL
+                        distribution = POM_LICENCE_DIST
+                    }
+                }
+            }
+        }
+    }
+}
+tasks.withType(GenerateMavenPom).all {
+    destination = "$buildDir/libs/${project.name}-${VERSION_CODE}.pom"
+}
+build.dependsOn('sourceJar')
+build.dependsOn('javadocJar')
+build.dependsOn('generatePomFileForMavenJavaPublication')

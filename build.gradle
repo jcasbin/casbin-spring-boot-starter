@@ -11,9 +11,10 @@ buildScan {
 }
 
 apply plugin: 'io.spring.dependency-management'
-apply from: "version.gradle"
+apply from: "maven.gradle"
+apply from: "travis.gradle"
+apply from: "bintray.gradle"
 apply from: "jacoco.gradle"
-apply from: "binary.gradle"
 
 group = 'org.casbin'
 version getVersionCode()
