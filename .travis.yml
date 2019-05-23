@@ -12,24 +12,13 @@ install: true
 before_script:
   - chmod +x ./gradlew
 script:
-  - "./gradlew build --parallel --scan -s"
+  - ./gradlew build --parallel --scan -s
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 cache:
   directories:
-    - "$HOME/.gradle/caches/"
-    - "$HOME/.gradle/wrapper/"
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-deploy:
-  provider: bintray
-  user: fangzhengjin
-  key:
-    secure: xXsc7gts5/PEKJxXzix9XTSDBbMmorHyTuC4L9mF1hBwgKkHfRzz2qCso/KLrwybDqGtx2J6RJ8XDaoBKXmCdJ9/eNfWGcnpx+MzQnUAes2gx/R6YOUGxEaUwQ7XACEoLgNbeUUnBwT+rN1XQyS4/BitFkO3AoGLg/pjLQ6FYPP3y+xA8ZEF5o1xsYBcB1TpV9GTs579TGEtjDe+FSwmmiXfFQqbJOuHBcRe2Pt8BsJpcR+MyKof03TUTOPpW2PPS4MgjVAfOk3TnaTRalTtARyBiWB4ssL39UtjDsgGaDlbzgaCmNa1b7XoAnfUdTtnNnvdEEQALScNomo0Q+vUWbnYexbac+izmn7+XiYVMIhqfVYjNnbYuQcEt50kZ9GyGOCPIrWrb9gPMZE9YGei9JLzE+W/3e41nW1x9GIDM0L/RK1rSunamANZso9lryWk6p2OQfMCZlSXP5RiqQ7liJiEKwPWA9N15yMV069u61q8BTmPLiBAqfGTNeVd5HkIbhSfhP4xFADGSEPZjHFpkxdsqsIb5RdWncmwK/VMiHEAyPIx+21VBQFgGZCl5/Fyu8aGeHNoetTlkW3IRluBFlgsUCyZf+GP0UGxAb87fMuGYY15/1FLVxBVpwcmwhX9BEPNv1D7IlopaNtU6TNgGkfGGDHUdFsH2KznYEWkDeY=
-  skip_cleanup: true
-  file: build/descriptor.json
-  on:
-    tags: true
-    jdk: oraclejdk8
-    branch: master

@@ -1,0 +1,130 @@
+//上传到jcenter至少需要四个文件，除了打包的jar之外，
+//还需要pom和javadoc，source，否则是通不过jcenter审核的。
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+group = GROUP
+version = getVersionCode()
+
+def getBintrayUserProperty() {
+    return hasProperty('BINTRAY_USER') ? BINTRAY_USER : ""
+}
+
+def getBintrayApiKeyProperty() {
+    return hasProperty('BINTRAY_APIKEY') ? BINTRAY_APIKEY : ""
+}
+
+//根据jcenter的审核要求 必须包含sourceJar和docJar
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+javadoc {
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        tags = [
+                "title:a:title",
+                "package:a:package",
+                "description:a:description",
+                "date:a:date"
+        ]
+    }
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            //GAV配置
+            groupId GROUP
+            artifactId ARTIFACT_ID
+            version getVersionCode()
+
+            from components.java
+            afterEvaluate {
+                artifact sourceJar
+                artifact javadocJar
+            }
+
+            //pom相关信息
+            pom {
+                name = ARTIFACT_ID
+                description = POM_DESCRIPTION
+                url = POM_URL
+                scm {
+                    url = POM_SCM_URL
+                    connection = POM_SCM_CONNECTION
+                    developerConnection = POM_SCM_DEV_CONNECTION
+                }
+                issueManagement {
+                    system = 'Github'
+                    url = ISSUE_URL
+                }
+                developers {
+                    developer {
+                        id = POM_DEVELOPER_ID
+                        name = POM_DEVELOPER_NAME
+                        email = POM_DEVELOPER_EMAIL
+                        url = POM_DEVELOPER_URL
+                    }
+                }
+                licenses {
+                    license {
+                        name = POM_LICENCE_NAME
+                        url = POM_LICENCE_URL
+                        distribution = POM_LICENCE_DIST
+                    }
+                }
+            }
+        }
+    }
+}
+// gradle bintrayUpload
+bintray {
+    user = getBintrayUserProperty()
+    key = getBintrayApiKeyProperty()
+    publications = ['mavenJava']
+//    configurations = ['archives']
+    dryRun = false
+    publish = true
+    pkg {
+        //你在bintray建立的仓库类型
+        repo = 'maven'
+        //包名
+        name = ARTIFACT_ID
+        //JCenter组织
+        userOrg = ORGANIZATION
+        //描述
+        desc = POM_DESCRIPTION
+        //站点地址
+        websiteUrl = POM_URL
+        //缺陷提交地址
+        issueTrackerUrl = ISSUE_URL
+        //版本库地址
+        vcsUrl = GIT_URL
+        //许可证
+        licenses = [POM_LICENCE_NAME]
+//        labels = ['gradle', 'core']
+        publicDownloadNumbers = true
+        //Github仓库相对地址
+        githubRepo = GITHUB_REPO
+        //版本历程文件
+        githubReleaseNotesFile = 'README.md' //Optional Github readme file
+        version {
+            //版本号
+            name = getVersionCode()
+            //版本描述
+            desc = POM_DESCRIPTION
+            mavenCentralSync {
+                sync = false
+                user = MAVEN_USER
+                password = MAVEN_PWD
+            }
+        }
+    }
+}

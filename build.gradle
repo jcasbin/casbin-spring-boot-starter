@@ -11,13 +11,12 @@ buildScan {
 }
 
 apply plugin: 'io.spring.dependency-management'
-apply from: "maven.gradle"
-apply from: "travis.gradle"
-apply from: "bintray.gradle"
+apply from: "version.gradle"
 apply from: "jacoco.gradle"
+apply from: "binary.gradle"
 
 group = 'org.casbin'
-version VERSION_CODE
+version getVersionCode()
 sourceCompatibility = '1.8'
 compileJava.options.encoding = 'UTF-8'
 
@@ -37,7 +36,7 @@ configurations {
 }
 
 dependencies {
-    compile 'org.casbin:jcasbin:1.3.0'
+    compile 'org.casbin:jcasbin:1.2.0'
     compile 'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
