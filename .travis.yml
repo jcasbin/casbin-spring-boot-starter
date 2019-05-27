@@ -1,8 +1,5 @@
 language: java
 jdk: oraclejdk8
-branches:
-  only:
-  - master
 services:
   - mysql
   - redis-server
