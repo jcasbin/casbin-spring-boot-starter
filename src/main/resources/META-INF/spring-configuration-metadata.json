@@ -15,6 +15,13 @@
       "defaultValue": true
     },
     {
+      "name": "casbin.useSyncedEnforcer",
+      "type": "java.lang.Boolean",
+      "description": "use Synced Enforcer",
+      "sourceType": "org.casbin.spring.boot.autoconfigure.properties.CasbinProperties",
+      "defaultValue": false
+    },
+    {
       "name": "casbin.model",
       "type": "java.lang.String",
       "description": "Casbin model conf file",

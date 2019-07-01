@@ -1,6 +1,7 @@
 package org.casbin.spring.boot.autoconfigure;
 
 import lombok.extern.slf4j.Slf4j;
+import org.casbin.jcasbin.main.Enforcer;
 import org.casbin.jcasbin.persist.Watcher;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinProperties;
 import org.casbin.watcher.RedisWatcher;
@@ -31,8 +32,8 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(CasbinProperties.class)
-@AutoConfigureAfter({RedisAutoConfiguration.class})
-@ConditionalOnExpression("'jdbc'.equalsIgnoreCase('${casbin.storeType}') && ${casbin.enableWatcher:true} && 'redis'.equalsIgnoreCase('${casbin.watcherType}') ")
+@AutoConfigureAfter({RedisAutoConfiguration.class, CasbinAutoConfiguration.class})
+@ConditionalOnExpression("'jdbc'.equalsIgnoreCase('${casbin.storeType:jdbc}') && ${casbin.enableWatcher:false} && 'redis'.equalsIgnoreCase('${casbin.watcherType:redis}') ")
 public class CasbinRedisWatcherAutoConfiguration {
 
     public final static String CASBIN_POLICY_TOPIC = "CASBIN_POLICY_TOPIC";
@@ -41,8 +42,11 @@ public class CasbinRedisWatcherAutoConfiguration {
     @ConditionalOnBean(RedisTemplate.class)
     @ConditionalOnMissingBean
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public Watcher redisWatcher(StringRedisTemplate stringRedisTemplate) {
-        return new RedisWatcher(stringRedisTemplate);
+    public Watcher redisWatcher(StringRedisTemplate stringRedisTemplate, Enforcer enforcer) {
+        RedisWatcher watcher = new RedisWatcher(stringRedisTemplate);
+        enforcer.setWatcher(watcher);
+        logger.info("Casbin set watcher: {}", watcher.getClass().getName());
+        return watcher;
     }
 
     /**

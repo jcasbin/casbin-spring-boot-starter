@@ -1,16 +1,15 @@
 package org.casbin.spring.boot.autoconfigure;
 
-import javax.sql.DataSource;
-
+import lombok.extern.slf4j.Slf4j;
 import org.casbin.adapter.DB2Adapter;
 import org.casbin.adapter.JdbcAdapter;
 import org.casbin.adapter.OracleAdapter;
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.exception.CasbinModelConfigNotFoundException;
 import org.casbin.jcasbin.main.Enforcer;
+import org.casbin.jcasbin.main.SyncedEnforcer;
 import org.casbin.jcasbin.model.Model;
 import org.casbin.jcasbin.persist.Adapter;
-import org.casbin.jcasbin.persist.Watcher;
 import org.casbin.jcasbin.persist.file_adapter.FileAdapter;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinDataSourceInitializationMode;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinProperties;
@@ -27,10 +26,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.sql.DataSource;
 
 /**
  * @author fangzhengjin
@@ -44,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(CasbinProperties.class)
-@AutoConfigureAfter({JdbcTemplateAutoConfiguration.class, CasbinRedisWatcherAutoConfiguration.class})
+@AutoConfigureAfter({JdbcTemplateAutoConfiguration.class})
 @ConditionalOnExpression("${casbin.enableCasbin:true}")
 public class CasbinAutoConfiguration {
 
@@ -95,7 +93,7 @@ public class CasbinAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public Enforcer enforcer(CasbinProperties properties, Adapter adapter, @Nullable Watcher watcher) {
+    public Enforcer enforcer(CasbinProperties properties, Adapter adapter) {
         Model model = new Model();
         try {
             String modelRealPath = properties.getModelRealPath();
@@ -117,12 +115,14 @@ public class CasbinAutoConfiguration {
             // matchers
             model.addDef("m", "m", "g(r.sub, p.sub) && r.obj == p.obj && r.act == p.act");
         }
-        Enforcer enforcer = new Enforcer(model, adapter);
-        enforcer.enableAutoSave(properties.isAutoSave());
-        if (watcher != null) {
-            logger.info("Casbin set watcher: {}", watcher.getClass().getName());
-            enforcer.setWatcher(watcher);
+        Enforcer enforcer;
+        if (properties.isUseSyncedEnforcer()) {
+            enforcer = new SyncedEnforcer(model, adapter);
+            logger.info("Casbin use SyncedEnforcer");
+        } else {
+            enforcer = new Enforcer(model, adapter);
         }
+        enforcer.enableAutoSave(properties.isAutoSave());
         return enforcer;
     }
 

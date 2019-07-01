@@ -24,6 +24,10 @@ public class CasbinProperties {
      */
     private boolean enableCasbin = true;
     /**
+     * 是否使用同步的Enforcer
+     */
+    private boolean useSyncedEnforcer = false;
+    /**
      * 本地model文件
      */
     private String model = "classpath:casbin/model.conf";

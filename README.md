@@ -44,6 +44,8 @@ public class Test{
 casbin:
   #Whether to enable Casbin, it is enabled by default.
   enableCasbin: true
+    #Whether to use thread-synchronized Enforcer, default false
+    casbin.useSyncedEnforcer: false
   #Whether to enable automatic policy saving, if the adapter supports this function, it is enabled by default.
   autoSave: true
   #Storage type [file, jdbc], currently supported jdbc database [mysql (mariadb), h2, oracle, postgresql]

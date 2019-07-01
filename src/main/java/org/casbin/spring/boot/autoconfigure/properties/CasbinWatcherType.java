@@ -12,5 +12,6 @@ public enum CasbinWatcherType {
     /**
      * 使用Redis通知同步策略
      */
-    REDIS
+    REDIS,
+    JMS
 }
