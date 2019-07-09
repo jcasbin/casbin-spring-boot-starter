@@ -35,7 +35,15 @@ publishing {
                 artifactId = ARTIFACT_ID
                 version = VERSION_CODE
             }
-
+            //将动态依赖版本解析为实际引用版本 如 1.2.+ -> 1.2.10
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
             //pom相关信息
             pom {
                 name = ARTIFACT_ID
