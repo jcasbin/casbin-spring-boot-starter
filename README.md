@@ -44,11 +44,11 @@ public class Test{
 casbin:
   #Whether to enable Casbin, it is enabled by default.
   enableCasbin: true
-    #Whether to use thread-synchronized Enforcer, default false
-    casbin.useSyncedEnforcer: false
+  #Whether to use thread-synchronized Enforcer, default false
+  useSyncedEnforcer: false
   #Whether to enable automatic policy saving, if the adapter supports this function, it is enabled by default.
   autoSave: true
-  #Storage type [file, jdbc], currently supported jdbc database [mysql (mariadb), h2, oracle, postgresql]
+  #Storage type [file, jdbc], currently supported jdbc database [mysql (mariadb), h2, oracle, postgresql, db2]
   #Welcome to write and submit the jdbc adapter you are using, see: org.casbin.adapter.OracleAdapter
   #The jdbc adapter will actively look for the data source information you configured in spring.datasource
   #Default use jdbc, and use the built-in h2 database for memory storage
