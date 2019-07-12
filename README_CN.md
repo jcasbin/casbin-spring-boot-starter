@@ -43,7 +43,7 @@ casbin:
   #是否开启Casbin,默认开启
   enableCasbin: true
   #是否使用线程同步的Enforcer,默认false
-  casbin.useSyncedEnforcer: false
+  useSyncedEnforcer: false
   #是否开启策略自动保存，如适配器支持该功能，默认开启
   autoSave: true
   #存储类型[file,jdbc]，目前支持的jdbc数据库[mysql(mariadb),h2,oracle,postgresql]
