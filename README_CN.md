@@ -46,7 +46,7 @@ casbin:
   useSyncedEnforcer: false
   #是否开启策略自动保存，如适配器支持该功能，默认开启
   autoSave: true
-  #存储类型[file,jdbc]，目前支持的jdbc数据库[mysql(mariadb),h2,oracle,postgresql]
+  #存储类型[file,jdbc]，目前支持的jdbc数据库[mysql(mariadb),h2,oracle,postgresql,db2]
   #欢迎编写并提交您所使用的jdbc适配器，参见：org.casbin.adapter.OracleAdapter
   #jdbc适配器将主动寻找您在spring.datasource配置的数据源信息
   #默认使用jdbc,并使用内置h2数据库进行内存存储
