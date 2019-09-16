@@ -1,6 +1,7 @@
 package org.casbin.spring.boot.autoconfigure;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.sql.DataSource;
+
 import org.casbin.adapter.DB2Adapter;
 import org.casbin.adapter.JdbcAdapter;
 import org.casbin.adapter.OracleAdapter;
@@ -28,7 +29,7 @@ import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.util.StringUtils;
 
-import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author fangzhengjin
@@ -96,8 +97,7 @@ public class CasbinAutoConfiguration {
     public Enforcer enforcer(CasbinProperties properties, Adapter adapter) {
         Model model = new Model();
         try {
-            String modelRealPath = properties.getModelRealPath();
-            model.loadModel(modelRealPath);
+            model.loadModelFromText(properties.getModelContent());
         } catch (CasbinModelConfigNotFoundException e) {
             // 如果未设置本地model文件地址或默认路径未找到文件,使用默认rbac配置
             if (!properties.isUseDefaultModelIfModelNotSetting()) {

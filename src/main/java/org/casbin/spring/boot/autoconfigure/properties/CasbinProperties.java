@@ -1,12 +1,17 @@
 package org.casbin.spring.boot.autoconfigure.properties;
 
-import lombok.Data;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.casbin.exception.CasbinModelConfigNotFoundException;
 import org.casbin.exception.CasbinPolicyConfigNotFoundException;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 
-import java.io.FileNotFoundException;
+import lombok.Data;
 
 /**
  * @author fangzhengjin
@@ -70,11 +75,36 @@ public class CasbinProperties {
         }
     }
 
+    public String getModelContent() {
+        try {
+            return getClasspathResourceContent(model);
+        } catch (IOException e) {
+            throw new CasbinModelConfigNotFoundException(e.getMessage(), e.getCause());
+        }
+    }
+
     public String getPolicyRealPath() {
         try {
             return ResourceUtils.getURL(policy).getPath();
         } catch (FileNotFoundException e) {
             throw new CasbinPolicyConfigNotFoundException(e.getMessage(), e.getCause());
+        }
+    }
+
+    public String getPolicyContent() {
+        try {
+            return getClasspathResourceContent(policy);
+        } catch (IOException e) {
+            throw new CasbinPolicyConfigNotFoundException(e.getMessage(), e.getCause());
+        }
+    }
+
+    private String getClasspathResourceContent(String resource) throws IOException {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new ClassPathResource(resource).getInputStream()))) {
+            StringBuilder content = new StringBuilder();
+            br.lines().forEach(line -> content.append(line).append(System.lineSeparator()));
+            return content.toString();
         }
     }
 }
