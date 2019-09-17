@@ -7,8 +7,9 @@ import java.io.InputStreamReader;
 
 import org.casbin.exception.CasbinModelConfigNotFoundException;
 import org.casbin.exception.CasbinPolicyConfigNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ResourceUtils;
 
 import lombok.Data;
@@ -24,6 +25,10 @@ import lombok.Data;
 @Data
 @ConfigurationProperties("casbin")
 public class CasbinProperties {
+
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     /**
      * 启用Casbin
      */
@@ -101,7 +106,7 @@ public class CasbinProperties {
 
     private String getClasspathResourceContent(String resource) throws IOException {
         try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(new ClassPathResource(resource).getInputStream()))) {
+                new InputStreamReader(resourceLoader.getResource(resource).getInputStream()))) {
             StringBuilder content = new StringBuilder();
             br.lines().forEach(line -> content.append(line).append(System.lineSeparator()));
             return content.toString();
