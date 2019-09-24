@@ -5,9 +5,7 @@ import org.casbin.exception.CasbinModelConfigNotFoundException;
 import org.casbin.exception.CasbinPolicyConfigNotFoundException;
 import org.casbin.utils.FileUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.ResourceUtils;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 /**
@@ -65,11 +63,21 @@ public class CasbinProperties {
     private boolean useDefaultModelIfModelNotSetting = true;
 
     public String getModelContext() {
-        return FileUtils.getFileAsText(model);
+        String text = FileUtils.getFileAsText(model);
+        if (text == null) {
+            throw new CasbinModelConfigNotFoundException();
+        } else {
+            return text;
+        }
     }
 
     public InputStream getPolicyInputStream() {
-        return FileUtils.getFileAsInputStream(policy);
+        InputStream stream = FileUtils.getFileAsInputStream(policy);
+        if (stream == null) {
+            throw new CasbinPolicyConfigNotFoundException();
+        } else {
+            return stream;
+        }
     }
 }
 
