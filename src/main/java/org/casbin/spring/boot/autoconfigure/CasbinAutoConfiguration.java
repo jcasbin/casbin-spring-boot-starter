@@ -12,6 +12,7 @@ import org.casbin.jcasbin.model.Model;
 import org.casbin.jcasbin.persist.Adapter;
 import org.casbin.jcasbin.persist.file_adapter.FileAdapter;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinDataSourceInitializationMode;
+import org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinProperties;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -29,6 +30,7 @@ import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.io.InputStream;
 
 /**
  * @author fangzhengjin
@@ -41,7 +43,7 @@ import javax.sql.DataSource;
 
 @Slf4j
 @Configuration
-@EnableConfigurationProperties(CasbinProperties.class)
+@EnableConfigurationProperties({CasbinProperties.class, CasbinExceptionProperties.class})
 @AutoConfigureAfter({JdbcTemplateAutoConfiguration.class})
 @ConditionalOnExpression("${casbin.enableCasbin:true}")
 public class CasbinAutoConfiguration {
@@ -55,8 +57,10 @@ public class CasbinAutoConfiguration {
     public Adapter autoConfigFileAdapter(CasbinProperties properties) {
         // 选择使用文件存储并正确设置了policy文件位置，则创建文件适配器
         if (!StringUtils.isEmpty(properties.getPolicy())) {
-            String policyPath = properties.getPolicyRealPath();
-            return new FileAdapter(policyPath);
+            try (InputStream policyInputStream = properties.getPolicyInputStream()) {
+                return new FileAdapter(policyInputStream);
+            } catch (Exception ignored) {
+            }
         }
         throw new CasbinAdapterException("Cannot create file adapter, because policy file is not set");
     }
@@ -69,7 +73,7 @@ public class CasbinAutoConfiguration {
     @ConditionalOnBean(JdbcTemplate.class)
     @ConditionalOnMissingBean
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public Adapter autoConfigJdbcAdapter(JdbcTemplate jdbcTemplate, CasbinProperties properties) {
+    public Adapter autoConfigJdbcAdapter(JdbcTemplate jdbcTemplate, CasbinProperties properties, CasbinExceptionProperties exceptionProperties) {
         String databaseName = getDatabaseName(jdbcTemplate.getDataSource());
         CasbinDataSourceInitializationMode initializeSchema = properties.getInitializeSchema();
         boolean autoCreateTable = initializeSchema == CasbinDataSourceInitializationMode.CREATE;
@@ -77,11 +81,11 @@ public class CasbinAutoConfiguration {
             case "mysql":
             case "h2":
             case "postgresql":
-                return new JdbcAdapter(jdbcTemplate, autoCreateTable);
+                return new JdbcAdapter(jdbcTemplate, exceptionProperties, autoCreateTable);
             case "oracle":
-                return new OracleAdapter(jdbcTemplate, autoCreateTable);
+                return new OracleAdapter(jdbcTemplate, exceptionProperties, autoCreateTable);
             case "db2":
-                return new DB2Adapter(jdbcTemplate, autoCreateTable);
+                return new DB2Adapter(jdbcTemplate, exceptionProperties, autoCreateTable);
             default:
                 throw new CasbinAdapterException("Can't find " + databaseName + " jdbc adapter");
         }
@@ -96,8 +100,8 @@ public class CasbinAutoConfiguration {
     public Enforcer enforcer(CasbinProperties properties, Adapter adapter) {
         Model model = new Model();
         try {
-            String modelRealPath = properties.getModelRealPath();
-            model.loadModel(modelRealPath);
+            String modelContext = properties.getModelContext();
+            model.loadModelFromText(modelContext);
         } catch (CasbinModelConfigNotFoundException e) {
             // 如果未设置本地model文件地址或默认路径未找到文件,使用默认rbac配置
             if (!properties.isUseDefaultModelIfModelNotSetting()) {

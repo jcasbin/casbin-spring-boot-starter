@@ -69,6 +69,8 @@ casbin:
   #CasbinWatcher notification mode, defaults to use Redis for notification synchronization, temporarily only supports Redis
   #After opening Watcher, you need to manually add spring-boot-starter-data-redis dependency.
   watcherType: redis
+  exception: 
+    ... See Schedule A for exception settings.
 ```
 4. The simplest configuration
 - Do not use other add-on configurations
@@ -85,4 +87,14 @@ casbin:
   #When you open Watcher, the default use of RedisWatcher requires manual addition of spring-boot-starter-data-redis dependency.
   enableWatcher: true
 ```
+##### Schedule A
+
+- ExceptionSettings(casbin.exception)
+
+| name               | description                                      | default |
+| ------------------ | ------------------------------------------------ | ------- |
+| removePolicyFailed | Throws an exception when the delete policy fails | false   |
+
+
+
 ##### Note: If you do not set another data source, or set the storage file location for H2, the data is stored in memory by default using H2.

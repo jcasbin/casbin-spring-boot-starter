@@ -67,6 +67,9 @@ casbin:
   #CasbinWatcher通知方式,默认使用Redis进行通知同步,暂时仅支持Redis
   #开启Watcher后需手动添加spring-boot-starter-data-redis依赖
   watcherType: redis
+  #异常抛出时机控制
+  exception:
+    ... 详见附表-异常设定
 ```
 4. 最简配置
 
@@ -84,4 +87,14 @@ casbin:
   #开启Watcher后,默认使用RedisWatcher需手动添加spring-boot-starter-data-redis依赖
   enableWatcher: true
 ```
+#### 附表：
+
+- 异常设定(casbin.exception)
+
+| name               | description                | default |
+| ------------------ | -------------------------- | ------- |
+| removePolicyFailed | 删除策略失败时是否抛出异常 | false   |
+
+
+
 ##### 注意: 如果您没有设置其他数据源,或为H2设定存储文件位置,则默认使用H2将数据存储于内存中

@@ -3,10 +3,12 @@ package org.casbin.spring.boot.autoconfigure.properties;
 import lombok.Data;
 import org.casbin.exception.CasbinModelConfigNotFoundException;
 import org.casbin.exception.CasbinPolicyConfigNotFoundException;
+import org.casbin.utils.FileUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.ResourceUtils;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * @author fangzhengjin
@@ -62,20 +64,12 @@ public class CasbinProperties {
      */
     private boolean useDefaultModelIfModelNotSetting = true;
 
-    public String getModelRealPath() {
-        try {
-            return ResourceUtils.getURL(model).getPath();
-        } catch (FileNotFoundException e) {
-            throw new CasbinModelConfigNotFoundException(e.getMessage(), e.getCause());
-        }
+    public String getModelContext() {
+        return FileUtils.getFileAsText(model);
     }
 
-    public String getPolicyRealPath() {
-        try {
-            return ResourceUtils.getURL(policy).getPath();
-        } catch (FileNotFoundException e) {
-            throw new CasbinPolicyConfigNotFoundException(e.getMessage(), e.getCause());
-        }
+    public InputStream getPolicyInputStream() {
+        return FileUtils.getFileAsInputStream(policy);
     }
 }
 

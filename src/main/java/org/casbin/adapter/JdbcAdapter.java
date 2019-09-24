@@ -1,8 +1,10 @@
 package org.casbin.adapter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.jcasbin.model.Model;
 import org.casbin.jcasbin.persist.Adapter;
+import org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
  * @description:
  * @date 2019/4/4 16:03
  */
+@Slf4j
 public class JdbcAdapter implements Adapter {
 
     private final static String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS casbin_rule (" +
@@ -42,9 +45,11 @@ public class JdbcAdapter implements Adapter {
     private final static String DELETE_POLICY_SQL = "DELETE FROM casbin_rule WHERE ptype = ? ";
 
     protected JdbcTemplate jdbcTemplate;
+    protected CasbinExceptionProperties casbinExceptionProperties;
 
-    public JdbcAdapter(JdbcTemplate jdbcTemplate, boolean autoCreateTable) {
+    public JdbcAdapter(JdbcTemplate jdbcTemplate, CasbinExceptionProperties casbinExceptionProperties, boolean autoCreateTable) {
         this.jdbcTemplate = jdbcTemplate;
+        this.casbinExceptionProperties = casbinExceptionProperties;
         if (autoCreateTable) {
             initTable();
         }
@@ -216,7 +221,11 @@ public class JdbcAdapter implements Adapter {
         }
         int rows = jdbcTemplate.update(delSql, params.toArray());
         if (rows < 1) {
-            throw new CasbinAdapterException(String.format("Remove filtered policy error, remove %d rows, expect least 1 rows", rows));
+            if (casbinExceptionProperties.isRemovePolicyFailed()) {
+                throw new CasbinAdapterException(String.format("Remove filtered policy error, remove %d rows, expect least 1 rows", rows));
+            } else {
+                logger.warn(String.format("Remove filtered policy error, remove %d rows, expect least 1 rows", rows));
+            }
         }
     }
 }

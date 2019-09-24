@@ -4,6 +4,11 @@
       "sourceType": "org.casbin.spring.boot.autoconfigure.properties.CasbinProperties",
       "name": "casbin",
       "type": "org.casbin.spring.boot.autoconfigure.properties.CasbinProperties"
+    },
+    {
+      "sourceType": "org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties",
+      "name": "casbin.exception",
+      "type": "org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties"
     }
   ],
   "properties": [
@@ -76,6 +81,13 @@
       "description": "Casbin watcher type",
       "sourceType": "org.casbin.spring.boot.autoconfigure.properties.CasbinProperties",
       "defaultValue": "redis"
+    },
+    {
+      "name": "casbin.exception.removePolicyFailed",
+      "type": "java.lang.Boolean",
+      "description": "Throws an exception when the delete policy fails",
+      "sourceType": "org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties",
+      "defaultValue": false
     }
   ]
 }

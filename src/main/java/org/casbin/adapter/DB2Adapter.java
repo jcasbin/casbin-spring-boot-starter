@@ -1,21 +1,21 @@
 package org.casbin.adapter;
 
+import org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * @author liuyunsh@cn.ibm.com
- * @date 2019年4月23日
  * @version V1.0
- *
+ * @date 2019年4月23日
  */
-public class DB2Adapter extends JdbcAdapter{
+public class DB2Adapter extends JdbcAdapter {
 
     private static final String CHECK_TABLE_SQL = "select 1 from syscat.tables where tabname = upper('CASBIN_RULE')";
 
     private final static String DROP_TABLE_SQL = "DROP TABLE CASBIN_RULE";
 
-    private static final String INIT_TABLE_SQL =  "CREATE TABLE CASBIN_RULE (" +
+    private static final String INIT_TABLE_SQL = "CREATE TABLE CASBIN_RULE (" +
             "  PTYPE VARCHAR(255) NOT NULL ," +
             "  V0 VARCHAR(255) DEFAULT NULL ," +
             "  V1 VARCHAR(255) DEFAULT NULL ," +
@@ -29,8 +29,8 @@ public class DB2Adapter extends JdbcAdapter{
      * @param jdbcTemplate
      * @param autoCreateTable
      */
-    public DB2Adapter(JdbcTemplate jdbcTemplate, boolean autoCreateTable) {
-        super(jdbcTemplate, autoCreateTable);
+    public DB2Adapter(JdbcTemplate jdbcTemplate, CasbinExceptionProperties casbinExceptionProperties, boolean autoCreateTable) {
+        super(jdbcTemplate, casbinExceptionProperties, autoCreateTable);
     }
 
     @Override
