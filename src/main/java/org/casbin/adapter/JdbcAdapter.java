@@ -3,7 +3,6 @@ package org.casbin.adapter;
 import lombok.extern.slf4j.Slf4j;
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.jcasbin.model.Model;
-import org.casbin.jcasbin.persist.Adapter;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -12,10 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -27,7 +23,7 @@ import java.util.stream.Collectors;
  * @date 2019/4/4 16:03
  */
 @Slf4j
-public class JdbcAdapter implements Adapter {
+public class JdbcAdapter implements FilteredAdapter {
 
     private final static String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS casbin_rule (" +
             "    ptype varchar(255) NOT NULL," +
@@ -46,6 +42,8 @@ public class JdbcAdapter implements Adapter {
 
     protected JdbcTemplate jdbcTemplate;
     protected CasbinExceptionProperties casbinExceptionProperties;
+
+    private boolean isFiltered = true;
 
     public JdbcAdapter(JdbcTemplate jdbcTemplate, CasbinExceptionProperties casbinExceptionProperties, boolean autoCreateTable) {
         this.jdbcTemplate = jdbcTemplate;
@@ -120,6 +118,7 @@ public class JdbcAdapter implements Adapter {
         policies.keySet().forEach(
                 k -> model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k))
         );
+        isFiltered = false;
     }
 
     /**
@@ -227,5 +226,126 @@ public class JdbcAdapter implements Adapter {
                 logger.warn(String.format("Remove filtered policy error, remove %d rows, expect least 1 rows", rows));
             }
         }
+    }
+
+    /**
+     * 仅加载与筛选器匹配的策略规则。
+     *
+     * @param model  the model.
+     * @param filter the filter used to specify which type of policy should be loaded.
+     * @throws CasbinAdapterException if the file path or the type of the filter is incorrect.
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public void loadFilteredPolicy(Model model, Object filter) throws CasbinAdapterException {
+        if (filter == null) {
+            loadPolicy(model);
+            return;
+        }
+        if (!(filter instanceof Filter)) {
+            throw new CasbinAdapterException("Invalid filter type.");
+        }
+        try {
+            loadFilteredPolicyFromJdbc(model, (Filter) filter);
+            isFiltered = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 从存储加载与筛选器匹配的策略规则
+     * 加载时会合并重复数据
+     *
+     * @param model  the model.
+     * @param filter the filter used to specify which type of policy should be loaded.
+     */
+    private void loadFilteredPolicyFromJdbc(Model model, Filter filter) {
+        List<CasbinRule> casbinRules = jdbcTemplate.query(getLoadPolicySql(), BeanPropertyRowMapper.newInstance(CasbinRule.class));
+        Map<String, List<ArrayList<String>>> policies = casbinRules.parallelStream().distinct()
+                .map(CasbinRule::toPolicy)
+                .collect(Collectors.toMap(x -> x.get(0), y -> {
+                    ArrayList<ArrayList<String>> lists = new ArrayList<>();
+                    if (!filterCasbinRule(y, filter)) {
+                        // 去除list第一项策略类型
+                        y.remove(0);
+                        lists.add(y);
+                    }
+                    return lists;
+                }, (oldValue, newValue) -> {
+                    oldValue.addAll(newValue);
+                    return oldValue;
+                }));
+            // 对分组的策略进行加载
+            policies.keySet().forEach(
+                    k -> model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k))
+            );
+            isFiltered = false;
+    }
+
+    /**
+     * 匹配每条规则
+     *
+     * @param policy the policy
+     * @param filter the filter used to specify which type of policy should be loaded.
+     * @return true if the policy is filtered.
+     */
+    private boolean filterCasbinRule(ArrayList<String> policy, Filter filter) {
+        if (filter == null) {
+            return false;
+        }
+        String[] filterSlice = null;
+        switch (policy.get(0)) {
+            case "p":
+                filterSlice = filter.p;
+                break;
+            case "g":
+                filterSlice = filter.g;
+                break;
+            default:
+                break;
+        }
+        if (filterSlice == null) {
+            filterSlice = new String[]{};
+        }
+        return filterWords(policy, filterSlice);
+    }
+
+    /**
+     * 对规则中的每个字段进行匹配
+     *
+     * @return true if the policy is filtered.
+     */
+    private boolean filterWords(ArrayList<String> policy, String[] filter) {
+        boolean skipLine = false;
+        int i = 0;
+        for (String s : filter) {
+            i++;
+            if (s.length() > 0 && !s.trim().equals(policy.get(i))) {
+                skipLine = true;
+                break;
+            }
+        }
+        return skipLine;
+    }
+
+    /**
+     * 如果加载的策略已被筛选，则返回true。
+     *
+     * @return true if have any filter roles.
+     */
+    @Override
+    public boolean isFiltered() {
+        return isFiltered;
+    }
+
+    /**
+     * 筛选器类。
+     * Enforcer当前仅接受此筛选器。
+     */
+    public static class Filter {
+        public String[] p;
+        public String[] g;
     }
 }
