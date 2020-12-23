@@ -277,13 +277,14 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
      * @param filter the filter used to specify which type of policy should be loaded.
      */
     private void loadFilteredPolicyFromJdbc(Model model, Filter filter) {
+        // group the policies by ptype and merge the duplicate data.
         List<CasbinRule> casbinRules = jdbcTemplate.query(getLoadPolicySql(), BeanPropertyRowMapper.newInstance(CasbinRule.class));
         Map<String, List<ArrayList<String>>> policies = casbinRules.parallelStream().distinct()
                 .map(CasbinRule::toPolicy)
                 .collect(Collectors.toMap(x -> x.get(0), y -> {
                     ArrayList<ArrayList<String>> lists = new ArrayList<>();
                     if (!filterCasbinRule(y, filter)) {
-                        // remove the first policy type in the list
+                        // remove the first policy type in the list.
                         y.remove(0);
                         lists.add(y);
                     }
