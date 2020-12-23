@@ -283,7 +283,7 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
                 .collect(Collectors.toMap(x -> x.get(0), y -> {
                     ArrayList<ArrayList<String>> lists = new ArrayList<>();
                     if (!filterCasbinRule(y, filter)) {
-                        // 去除list第一项策略类型
+                        // remove the first policy type in the list
                         y.remove(0);
                         lists.add(y);
                     }
@@ -292,7 +292,7 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
                     oldValue.addAll(newValue);
                     return oldValue;
                 }));
-            // 对分组的策略进行加载
+            // load grouped policies
             policies.keySet().forEach(
                     k -> model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k))
             );
