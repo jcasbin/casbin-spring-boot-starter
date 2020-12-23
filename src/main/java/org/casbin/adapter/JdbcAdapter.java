@@ -58,8 +58,8 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
      * Enforcer only accept this filter currently.
      */
     public static class Filter {
-        public String[] p = new String[]{"p","1"};
-        public String[] g = new String[]{"g","1"};
+        public String[] p;
+        public String[] g;
     }
 
 
