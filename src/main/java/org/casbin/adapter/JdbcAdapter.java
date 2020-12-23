@@ -15,15 +15,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author fangzhengjin
- * @version V1.0
+ * @author shy
+ * @version V1.1
  * @title: JdbcAdapter
  * @package org.casbin.adapter
  * @description:
- * @date 2019/4/4 16:03
+ * @date 2020/12/23 16:50
  */
 @Slf4j
-public class JdbcAdapter implements FilteredAdapter {
+public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
 
     private final static String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS casbin_rule (" +
             "    ptype varchar(255) NOT NULL," +
@@ -51,6 +51,15 @@ public class JdbcAdapter implements FilteredAdapter {
         if (autoCreateTable) {
             initTable();
         }
+    }
+
+    /**
+     * 筛选器类。
+     * Enforcer当前仅接受此筛选器。
+     */
+    public static class Filter {
+        public String[] p = new String[]{"p","1"};
+        public String[] g = new String[]{"g","1"};
     }
 
 
@@ -251,7 +260,16 @@ public class JdbcAdapter implements FilteredAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    /**
+     * 如果加载的策略已被筛选，则返回true。
+     *
+     * @return true if have any filter roles.
+     */
+    @Override
+    public boolean isFiltered() {
+        return isFiltered;
     }
 
     /**
@@ -278,9 +296,12 @@ public class JdbcAdapter implements FilteredAdapter {
                     return oldValue;
                 }));
             // 对分组的策略进行加载
-            policies.keySet().forEach(
-                    k -> model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k))
-            );
+        for (String k : policies.keySet()) {
+            model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k));
+        }
+//            policies.keySet().forEach(
+//                    k -> model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k))
+//            );
             isFiltered = false;
     }
 
@@ -328,24 +349,5 @@ public class JdbcAdapter implements FilteredAdapter {
             }
         }
         return skipLine;
-    }
-
-    /**
-     * 如果加载的策略已被筛选，则返回true。
-     *
-     * @return true if have any filter roles.
-     */
-    @Override
-    public boolean isFiltered() {
-        return isFiltered;
-    }
-
-    /**
-     * 筛选器类。
-     * Enforcer当前仅接受此筛选器。
-     */
-    public static class Filter {
-        public String[] p;
-        public String[] g;
     }
 }
