@@ -54,8 +54,8 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
     }
 
     /**
-     * 筛选器类。
-     * Enforcer当前仅接受此筛选器。
+     * the filter class.
+     * Enforcer only accept this filter currently.
      */
     public static class Filter {
         public String[] p = new String[]{"p","1"};
@@ -238,9 +238,9 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
     }
 
     /**
-     * 仅加载与筛选器匹配的策略规则。
+     * loadFilteredPolicy loads only policy rules that match the filter.
      *
-     * @param model  the model.
+     * @param model the model.
      * @param filter the filter used to specify which type of policy should be loaded.
      * @throws CasbinAdapterException if the file path or the type of the filter is incorrect.
      */
@@ -263,8 +263,6 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
     }
 
     /**
-     * 如果加载的策略已被筛选，则返回true。
-     *
      * @return true if have any filter roles.
      */
     @Override
@@ -273,10 +271,9 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
     }
 
     /**
-     * 从存储加载与筛选器匹配的策略规则
-     * 加载时会合并重复数据
+     * loadFilteredPolicyFromJdbc loads only policy rules that match the filter from file.
      *
-     * @param model  the model.
+     * @param model the model.
      * @param filter the filter used to specify which type of policy should be loaded.
      */
     private void loadFilteredPolicyFromJdbc(Model model, Filter filter) {
@@ -296,17 +293,14 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
                     return oldValue;
                 }));
             // 对分组的策略进行加载
-        for (String k : policies.keySet()) {
-            model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k));
-        }
-//            policies.keySet().forEach(
-//                    k -> model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k))
-//            );
+            policies.keySet().forEach(
+                    k -> model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k))
+            );
             isFiltered = false;
     }
 
     /**
-     * 匹配每条规则
+     * match the line.
      *
      * @param policy the policy
      * @param filter the filter used to specify which type of policy should be loaded.
@@ -334,7 +328,7 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
     }
 
     /**
-     * 对规则中的每个字段进行匹配
+     * match the words in the specific line.
      *
      * @return true if the policy is filtered.
      */
