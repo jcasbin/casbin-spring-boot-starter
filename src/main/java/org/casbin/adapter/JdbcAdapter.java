@@ -308,9 +308,6 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
      * @return true if the policy is filtered.
      */
     private boolean filterCasbinRule(ArrayList<String> policy, Filter filter) {
-        if (filter == null) {
-            return false;
-        }
         String[] filterSlice = null;
         switch (policy.get(0)) {
             case "p":
