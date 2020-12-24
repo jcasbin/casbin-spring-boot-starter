@@ -32,17 +32,6 @@ public class JdbcAdapterTest {
     private String loadPolicyResult;
 
     /**
-     * Initialize the model
-     */
-    public void init() {
-        model = newModel();
-        model.addDef("r", "r", "sub, obj, act");
-        model.addDef("p", "p", "sub, obj, act");
-        model.addDef("e", "e", "some(where (p.eft == allow))");
-        model.addDef("m", "m", "r.sub == p.sub && keyMatch(r.obj, p.obj) && regexMatch(r.act, p.act)");
-    }
-
-    /**
      * Invoke the loadPolicy function ahead of time then get a result for convenience of comparison.
      */
     @Before
@@ -116,5 +105,16 @@ public class JdbcAdapterTest {
         } catch (CasbinAdapterException casbinAdapterException) {
             assert true;
         }
+    }
+
+    /**
+     * Initialize the model
+     */
+    private void init() {
+        model = newModel();
+        model.addDef("r", "r", "sub, obj, act");
+        model.addDef("p", "p", "sub, obj, act");
+        model.addDef("e", "e", "some(where (p.eft == allow))");
+        model.addDef("m", "m", "r.sub == p.sub && keyMatch(r.obj, p.obj) && regexMatch(r.act, p.act)");
     }
 }
