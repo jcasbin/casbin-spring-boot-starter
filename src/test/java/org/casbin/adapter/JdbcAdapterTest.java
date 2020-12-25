@@ -36,15 +36,6 @@ public class JdbcAdapterTest {
     private String loadPolicyResult;
 
     /**
-     * Invoke the loadPolicy function ahead of time then get a result for convenience of comparison.
-     */
-    @Before
-    public void getLoadPolicyResult() {
-        init();
-        this.jdbcAdapter.loadPolicy(this.model);
-        this.loadPolicyResult = this.model.savePolicyToText();
-    }
-    /**
      * Test the loadFilteredPolicy function;
      */
     @Test
@@ -53,6 +44,7 @@ public class JdbcAdapterTest {
         List<String> rules;
 
         init();
+        getLoadPolicyResult();
 
         // define the filter which can match any the policy rules.
         filter.g = new String[]{
@@ -72,6 +64,7 @@ public class JdbcAdapterTest {
         Assert.assertNotEquals(this.loadPolicyResult, this.model.savePolicyToText());
 
         init();
+        getLoadPolicyResult();
 
         // define the filter which can not match all the policy rules.
         filter.g = new String[]{
@@ -95,6 +88,8 @@ public class JdbcAdapterTest {
      */
     @Test
     public void testLoadFilteredPolicyEmptyFilter() {
+        init();
+        getLoadPolicyResult();
         init();
 
         // the filter is null, so the result is same as the loadPolicyResult.
@@ -127,5 +122,13 @@ public class JdbcAdapterTest {
         this.model.addDef("p", "p", "sub, obj, act");
         this.model.addDef("e", "e", "some(where (p.eft == allow))");
         this.model.addDef("m", "m", "r.sub == p.sub && keyMatch(r.obj, p.obj) && regexMatch(r.act, p.act)");
+    }
+
+    /**
+     * Invoke the loadPolicy function ahead of time then get a result for convenience of comparison.
+     */
+    private void getLoadPolicyResult() {
+        this.jdbcAdapter.loadPolicy(this.model);
+        this.loadPolicyResult = this.model.savePolicyToText();
     }
 }
