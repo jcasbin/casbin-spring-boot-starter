@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.casbin.jcasbin.main.CoreEnforcer.newModel;
 
 /**
@@ -37,8 +41,8 @@ public class JdbcAdapterTest {
     @Before
     public void getLoadPolicyResult() {
         init();
-        jdbcAdapter.loadPolicy(model);
-        loadPolicyResult = model.savePolicyToText();
+        this.jdbcAdapter.loadPolicy(this.model);
+        this.loadPolicyResult = this.model.savePolicyToText();
     }
     /**
      * Test the loadFilteredPolicy function;
@@ -46,36 +50,44 @@ public class JdbcAdapterTest {
     @Test
     public void testLoadFilteredPolicy() {
         JdbcAdapter.Filter filter = new JdbcAdapter.Filter();
+        List<String> rules;
 
         init();
 
-        // define the filter which can match all the policy rules.
+        // define the filter which can match any the policy rules.
         filter.g = new String[]{
-                "", "", "domain1"
+                "domain1", "domain2"
         };
         filter.p = new String[]{
-                "", "domain1"
+                "domain2", "domain3"
         };
+
+        rules = new ArrayList<>(Arrays.asList("domain2", "domain3"));
+        this.model.addPolicy("p","p", rules);
+        this.jdbcAdapter.savePolicy(model);
 
         // only policy rules that match the filter should be loaded,
         // so the result is different from the loadPolicyResult.
-        jdbcAdapter.loadFilteredPolicy(model, filter);
-        Assert.assertNotEquals(loadPolicyResult, model.savePolicyToText());
+        this.jdbcAdapter.loadFilteredPolicy(this.model, filter);
+        Assert.assertNotEquals(this.loadPolicyResult, this.model.savePolicyToText());
 
         init();
 
         // define the filter which can not match all the policy rules.
         filter.g = new String[]{
-                "", "", "domain1"
+                "domain1", "domain5"
         };
         filter.p = new String[]{
-                "", "domain2"
+                "domain5", "domain6"
         };
 
+        rules = new ArrayList<>(Arrays.asList("domain2", "domain3"));
+        this.model.addPolicy("p","p", rules);
+        this.jdbcAdapter.savePolicy(model);
         // there are no policy rules that match the filter,
         // so the result is same as the loadPolicyResult.
-        jdbcAdapter.loadFilteredPolicy(model, filter);
-        Assert.assertEquals(loadPolicyResult, model.savePolicyToText());
+        this.jdbcAdapter.loadFilteredPolicy(this.model, filter);
+        Assert.assertEquals(this.loadPolicyResult, this.model.savePolicyToText());
     }
 
     /**
@@ -86,9 +98,8 @@ public class JdbcAdapterTest {
         init();
 
         // the filter is null, so the result is same as the loadPolicyResult.
-        jdbcAdapter.loadFilteredPolicy(model, null);
-        Assert.assertEquals(loadPolicyResult, model.savePolicyToText());
-
+        this.jdbcAdapter.loadFilteredPolicy(this.model, null);
+        Assert.assertEquals(this.loadPolicyResult, this.model.savePolicyToText());
     }
 
     /**
@@ -101,7 +112,7 @@ public class JdbcAdapterTest {
         // owing to the invalid filter type,this function should throw a CasbinAdapterException
         Object filter = new Object();
         try {
-            jdbcAdapter.loadFilteredPolicy(model, filter);
+            this.jdbcAdapter.loadFilteredPolicy(this.model, filter);
         } catch (CasbinAdapterException casbinAdapterException) {
             assert true;
         }
@@ -111,10 +122,10 @@ public class JdbcAdapterTest {
      * Initialize the model
      */
     private void init() {
-        model = newModel();
-        model.addDef("r", "r", "sub, obj, act");
-        model.addDef("p", "p", "sub, obj, act");
-        model.addDef("e", "e", "some(where (p.eft == allow))");
-        model.addDef("m", "m", "r.sub == p.sub && keyMatch(r.obj, p.obj) && regexMatch(r.act, p.act)");
+        this.model = newModel();
+        this.model.addDef("r", "r", "sub, obj, act");
+        this.model.addDef("p", "p", "sub, obj, act");
+        this.model.addDef("e", "e", "some(where (p.eft == allow))");
+        this.model.addDef("m", "m", "r.sub == p.sub && keyMatch(r.obj, p.obj) && regexMatch(r.act, p.act)");
     }
 }
