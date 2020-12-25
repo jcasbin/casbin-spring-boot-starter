@@ -2,11 +2,11 @@ package org.casbin.adapter;
 
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.jcasbin.model.Model;
+import org.casbin.jcasbin.persist.Adapter;
+import org.casbin.jcasbin.persist.FilteredAdapter;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -30,7 +30,7 @@ import static org.casbin.jcasbin.main.CoreEnforcer.newModel;
 public class JdbcAdapterTest {
 
     @Resource
-    private JdbcAdapter jdbcAdapter;
+    private FilteredAdapter filteredAdapter;
 
     private Model model;
     /** the result of the loadPolicy function */
@@ -57,11 +57,11 @@ public class JdbcAdapterTest {
 
         rules = new ArrayList<>(Arrays.asList("domain2", "domain3"));
         this.model.addPolicy("p","p", rules);
-        this.jdbcAdapter.savePolicy(model);
+        this.filteredAdapter.savePolicy(model);
 
         // only policy rules that match the filter should be loaded,
         // so the result is different from the loadPolicyResult.
-        this.jdbcAdapter.loadFilteredPolicy(this.model, filter);
+        this.filteredAdapter.loadFilteredPolicy(this.model, filter);
         Assert.assertNotEquals(this.loadPolicyResult, this.model.savePolicyToText());
 
         init();
@@ -77,10 +77,10 @@ public class JdbcAdapterTest {
 
         rules = new ArrayList<>(Arrays.asList("domain2", "domain3"));
         this.model.addPolicy("p","p", rules);
-        this.jdbcAdapter.savePolicy(model);
+        this.filteredAdapter.savePolicy(model);
         // there are no policy rules that match the filter,
         // so the result is same as the loadPolicyResult.
-        this.jdbcAdapter.loadFilteredPolicy(this.model, filter);
+        this.filteredAdapter.loadFilteredPolicy(this.model, filter);
         Assert.assertEquals(this.loadPolicyResult, this.model.savePolicyToText());
     }
 
@@ -94,7 +94,7 @@ public class JdbcAdapterTest {
         init();
 
         // the filter is null, so the result is same as the loadPolicyResult.
-        this.jdbcAdapter.loadFilteredPolicy(this.model, null);
+        this.filteredAdapter.loadFilteredPolicy(this.model, null);
         Assert.assertEquals(this.loadPolicyResult, this.model.savePolicyToText());
     }
 
@@ -108,7 +108,7 @@ public class JdbcAdapterTest {
         // owing to the invalid filter type,this function should throw a CasbinAdapterException
         Object filter = new Object();
         try {
-            this.jdbcAdapter.loadFilteredPolicy(this.model, filter);
+            this.filteredAdapter.loadFilteredPolicy(this.model, filter);
         } catch (CasbinAdapterException casbinAdapterException) {
             assert true;
         }
@@ -129,7 +129,7 @@ public class JdbcAdapterTest {
      * Invoke the loadPolicy function ahead of time then get a result for convenience of comparison.
      */
     private void getLoadPolicyResult() {
-        this.jdbcAdapter.loadPolicy(this.model);
+        this.filteredAdapter.loadPolicy(this.model);
         this.loadPolicyResult = this.model.savePolicyToText();
     }
 }
