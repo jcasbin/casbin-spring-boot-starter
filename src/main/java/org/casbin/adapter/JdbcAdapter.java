@@ -43,7 +43,7 @@ public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
     protected JdbcTemplate jdbcTemplate;
     protected CasbinExceptionProperties casbinExceptionProperties;
 
-    private boolean isFiltered = true;
+    private volatile boolean isFiltered = true;
 
     public JdbcAdapter(JdbcTemplate jdbcTemplate, CasbinExceptionProperties casbinExceptionProperties, boolean autoCreateTable) {
         this.jdbcTemplate = jdbcTemplate;
