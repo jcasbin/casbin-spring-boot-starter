@@ -12,7 +12,7 @@ install: true
 before_script:
   - chmod +x ./gradlew
 script:
-  - "./gradlew build --parallel --scan -s"
+  - "./gradlew build"
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 cache:
