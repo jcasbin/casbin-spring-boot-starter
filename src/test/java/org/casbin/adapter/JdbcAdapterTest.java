@@ -1,0 +1,136 @@
+package org.casbin.adapter;
+
+import org.casbin.exception.CasbinAdapterException;
+import org.casbin.jcasbin.model.Model;
+import org.casbin.jcasbin.persist.Adapter;
+import org.casbin.jcasbin.persist.FilteredAdapter;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.casbin.jcasbin.main.CoreEnforcer.newModel;
+
+/**
+ * @author shy
+ * @version V1.0
+ * @title: JdbcAdapterTest
+ * @package org.casbin.adapter
+ * @description: test the loadFilteredPolicy function.
+ * @date 2020/12/24 18:10
+ */
+@SpringBootTest
+@RunWith(SpringRunner.class)
+public class JdbcAdapterTest {
+
+    @Resource
+    private FilteredAdapter filteredAdapter;
+
+    private Model model;
+    /** the result of the loadPolicy function */
+    private String loadPolicyResult;
+
+    /**
+     * Test the loadFilteredPolicy function;
+     */
+    @Test
+    public void testLoadFilteredPolicy() {
+        JdbcAdapter.Filter filter = new JdbcAdapter.Filter();
+        List<String> rules;
+
+        init();
+        getLoadPolicyResult();
+
+        // define the filter which can match any the policy rules.
+        filter.g = new String[]{
+                "domain1", "domain2"
+        };
+        filter.p = new String[]{
+                "domain2", "domain3"
+        };
+
+        rules = new ArrayList<>(Arrays.asList("domain2", "domain3"));
+        this.model.addPolicy("p","p", rules);
+        this.filteredAdapter.savePolicy(model);
+
+        // only policy rules that match the filter should be loaded,
+        // so the result is different from the loadPolicyResult.
+        this.filteredAdapter.loadFilteredPolicy(this.model, filter);
+        Assert.assertNotEquals(this.loadPolicyResult, this.model.savePolicyToText());
+
+        init();
+        getLoadPolicyResult();
+
+        // define the filter which can not match all the policy rules.
+        filter.g = new String[]{
+                "domain1", "domain5"
+        };
+        filter.p = new String[]{
+                "domain5", "domain6"
+        };
+
+        rules = new ArrayList<>(Arrays.asList("domain2", "domain3"));
+        this.model.addPolicy("p","p", rules);
+        this.filteredAdapter.savePolicy(model);
+        // there are no policy rules that match the filter,
+        // so the result is same as the loadPolicyResult.
+        this.filteredAdapter.loadFilteredPolicy(this.model, filter);
+        Assert.assertEquals(this.loadPolicyResult, this.model.savePolicyToText());
+    }
+
+    /**
+     * Test the loadFilteredPolicy function with the empty filter;
+     */
+    @Test
+    public void testLoadFilteredPolicyEmptyFilter() {
+        init();
+        getLoadPolicyResult();
+        init();
+
+        // the filter is null, so the result is same as the loadPolicyResult.
+        this.filteredAdapter.loadFilteredPolicy(this.model, null);
+        Assert.assertEquals(this.loadPolicyResult, this.model.savePolicyToText());
+    }
+
+    /**
+     * Test the loadFilteredPolicy function with the invalid filter type;
+     */
+    @Test
+    public void testLoadFilteredPolicyInvalidFilterType() {
+        init();
+
+        // owing to the invalid filter type,this function should throw a CasbinAdapterException
+        Object filter = new Object();
+        try {
+            this.filteredAdapter.loadFilteredPolicy(this.model, filter);
+        } catch (CasbinAdapterException casbinAdapterException) {
+            assert true;
+        }
+    }
+
+    /**
+     * Initialize the model
+     */
+    private void init() {
+        this.model = newModel();
+        this.model.addDef("r", "r", "sub, obj, act");
+        this.model.addDef("p", "p", "sub, obj, act");
+        this.model.addDef("e", "e", "some(where (p.eft == allow))");
+        this.model.addDef("m", "m", "r.sub == p.sub && keyMatch(r.obj, p.obj) && regexMatch(r.act, p.act)");
+        this.model.addDef("g", "g", "_, _");
+    }
+
+    /**
+     * Invoke the loadPolicy function ahead of time then get a result for convenience of comparison.
+     */
+    private void getLoadPolicyResult() {
+        this.filteredAdapter.loadPolicy(this.model);
+        this.loadPolicyResult = this.model.savePolicyToText();
+    }
+}
