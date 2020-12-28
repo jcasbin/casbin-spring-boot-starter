@@ -123,6 +123,7 @@ public class JdbcAdapterTest {
         this.model.addDef("p", "p", "sub, obj, act");
         this.model.addDef("e", "e", "some(where (p.eft == allow))");
         this.model.addDef("m", "m", "r.sub == p.sub && keyMatch(r.obj, p.obj) && regexMatch(r.act, p.act)");
+        this.model.addDef("g", "g", "_, _");
     }
 
     /**
