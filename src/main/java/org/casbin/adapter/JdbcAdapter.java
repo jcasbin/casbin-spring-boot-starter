@@ -3,6 +3,7 @@ package org.casbin.adapter;
 import lombok.extern.slf4j.Slf4j;
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.jcasbin.model.Model;
+import org.casbin.jcasbin.persist.FilteredAdapter;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
  * @date 2020/12/23 16:50
  */
 @Slf4j
-public class JdbcAdapter implements org.casbin.jcasbin.persist.FilteredAdapter {
+public class JdbcAdapter implements FilteredAdapter {
 
     private final static String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS casbin_rule (" +
             "    ptype varchar(255) NOT NULL," +
