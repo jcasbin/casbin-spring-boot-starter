@@ -1,8 +1,9 @@
 package org.casbin.watcher;
 
-import lombok.extern.slf4j.Slf4j;
 import org.casbin.jcasbin.persist.Watcher;
 import org.casbin.spring.boot.autoconfigure.CasbinRedisWatcherAutoConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.UUID;
@@ -15,11 +16,11 @@ import java.util.UUID;
  * @description:
  * @date 2019-4-06 1:58
  */
-@Slf4j
 public class RedisWatcher implements Watcher {
     private Runnable updateCallback;
-    private StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
     private final static String REDIS_WATCHER_UUID = UUID.randomUUID().toString();
+    private final static Logger logger = LoggerFactory.getLogger(RedisWatcher.class);
 
     public RedisWatcher(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;

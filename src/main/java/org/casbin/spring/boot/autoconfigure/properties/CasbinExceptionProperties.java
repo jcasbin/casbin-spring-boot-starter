@@ -1,6 +1,5 @@
 package org.casbin.spring.boot.autoconfigure.properties;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -11,7 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @description: 异常设置
  * @date 2019/9/24 15:25
  */
-@Data
 @ConfigurationProperties("casbin.exception")
 public class CasbinExceptionProperties {
 
@@ -20,5 +18,12 @@ public class CasbinExceptionProperties {
      */
     private boolean removePolicyFailed = false;
 
+    public boolean isRemovePolicyFailed() {
+        return removePolicyFailed;
+    }
+
+    public void setRemovePolicyFailed(boolean removePolicyFailed) {
+        this.removePolicyFailed = removePolicyFailed;
+    }
 }
 

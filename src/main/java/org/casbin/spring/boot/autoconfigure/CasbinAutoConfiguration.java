@@ -1,6 +1,5 @@
 package org.casbin.spring.boot.autoconfigure;
 
-import lombok.extern.slf4j.Slf4j;
 import org.casbin.adapter.DB2Adapter;
 import org.casbin.adapter.JdbcAdapter;
 import org.casbin.adapter.OracleAdapter;
@@ -14,6 +13,8 @@ import org.casbin.jcasbin.persist.file_adapter.FileAdapter;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinDataSourceInitializationMode;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -41,12 +42,13 @@ import java.io.InputStream;
  * @date 2019-4-05 13:53
  */
 
-@Slf4j
 @Configuration
 @EnableConfigurationProperties({CasbinProperties.class, CasbinExceptionProperties.class})
 @AutoConfigureAfter({JdbcTemplateAutoConfiguration.class})
 @ConditionalOnExpression("${casbin.enableCasbin:true}")
 public class CasbinAutoConfiguration {
+
+    private final static Logger logger = LoggerFactory.getLogger(CasbinAutoConfiguration.class);
 
     /**
      * 自动配置文件存储适配器

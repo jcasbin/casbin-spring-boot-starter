@@ -1,10 +1,11 @@
 package org.casbin.adapter;
 
-import lombok.extern.slf4j.Slf4j;
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.jcasbin.model.Model;
 import org.casbin.jcasbin.persist.FilteredAdapter;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,8 +24,9 @@ import java.util.stream.Collectors;
  * @description:
  * @date 2020/12/23 16:50
  */
-@Slf4j
 public class JdbcAdapter implements FilteredAdapter {
+
+    private final static Logger logger = LoggerFactory.getLogger(JdbcAdapter.class);
 
     private final static String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS casbin_rule (" +
             "    ptype varchar(255) NOT NULL," +
@@ -204,7 +206,9 @@ public class JdbcAdapter implements FilteredAdapter {
     @Transactional
     @Override
     public void removePolicy(String sec, String ptype, List<String> rule) {
-        if (rule.isEmpty()) return;
+        if (rule.isEmpty()) {
+            return;
+        }
         removeFilteredPolicy(sec, ptype, 0, rule.toArray(new String[0]));
     }
 
@@ -219,7 +223,9 @@ public class JdbcAdapter implements FilteredAdapter {
     @Transactional
     @Override
     public void removeFilteredPolicy(String sec, String ptype, int fieldIndex, String... fieldValues) {
-        if (fieldValues.length == 0) return;
+        if (fieldValues.length == 0) {
+            return;
+        }
         List<String> params = new ArrayList<>(Arrays.asList(fieldValues));
         params.add(0, ptype);
         String delSql = DELETE_POLICY_SQL;

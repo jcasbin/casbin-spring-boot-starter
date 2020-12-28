@@ -1,10 +1,11 @@
 package org.casbin.spring.boot.autoconfigure;
 
-import lombok.extern.slf4j.Slf4j;
 import org.casbin.jcasbin.main.Enforcer;
 import org.casbin.jcasbin.persist.Watcher;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinProperties;
 import org.casbin.watcher.RedisWatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -29,13 +30,13 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
  * @date 2019-4-05 13:53
  */
 
-@Slf4j
 @Configuration
 @EnableConfigurationProperties(CasbinProperties.class)
 @AutoConfigureAfter({RedisAutoConfiguration.class, CasbinAutoConfiguration.class})
 @ConditionalOnExpression("'jdbc'.equalsIgnoreCase('${casbin.storeType:jdbc}') && ${casbin.enableWatcher:false} && 'redis'.equalsIgnoreCase('${casbin.watcherType:redis}') ")
 public class CasbinRedisWatcherAutoConfiguration {
 
+    private final static Logger logger = LoggerFactory.getLogger(CasbinRedisWatcherAutoConfiguration.class);
     public final static String CASBIN_POLICY_TOPIC = "CASBIN_POLICY_TOPIC";
 
     @Bean

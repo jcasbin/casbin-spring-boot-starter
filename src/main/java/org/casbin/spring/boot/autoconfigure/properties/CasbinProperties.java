@@ -1,6 +1,5 @@
 package org.casbin.spring.boot.autoconfigure.properties;
 
-import lombok.Data;
 import org.casbin.exception.CasbinModelConfigNotFoundException;
 import org.casbin.exception.CasbinPolicyConfigNotFoundException;
 import org.casbin.utils.FileUtils;
@@ -16,7 +15,6 @@ import java.io.InputStream;
  * @description:
  * @date 2019/4/2 15:25
  */
-@Data
 @ConfigurationProperties("casbin")
 public class CasbinProperties {
     /**
@@ -78,6 +76,86 @@ public class CasbinProperties {
         } else {
             return stream;
         }
+    }
+
+    public boolean isEnableCasbin() {
+        return enableCasbin;
+    }
+
+    public void setEnableCasbin(boolean enableCasbin) {
+        this.enableCasbin = enableCasbin;
+    }
+
+    public boolean isUseSyncedEnforcer() {
+        return useSyncedEnforcer;
+    }
+
+    public void setUseSyncedEnforcer(boolean useSyncedEnforcer) {
+        this.useSyncedEnforcer = useSyncedEnforcer;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getPolicy() {
+        return policy;
+    }
+
+    public void setPolicy(String policy) {
+        this.policy = policy;
+    }
+
+    public CasbinStoreType getStoreType() {
+        return storeType;
+    }
+
+    public void setStoreType(CasbinStoreType storeType) {
+        this.storeType = storeType;
+    }
+
+    public CasbinWatcherType getWatcherType() {
+        return watcherType;
+    }
+
+    public void setWatcherType(CasbinWatcherType watcherType) {
+        this.watcherType = watcherType;
+    }
+
+    public CasbinDataSourceInitializationMode getInitializeSchema() {
+        return initializeSchema;
+    }
+
+    public void setInitializeSchema(CasbinDataSourceInitializationMode initializeSchema) {
+        this.initializeSchema = initializeSchema;
+    }
+
+    public boolean isEnableWatcher() {
+        return enableWatcher;
+    }
+
+    public void setEnableWatcher(boolean enableWatcher) {
+        this.enableWatcher = enableWatcher;
+    }
+
+    public boolean isAutoSave() {
+        return autoSave;
+    }
+
+    public void setAutoSave(boolean autoSave) {
+        this.autoSave = autoSave;
+    }
+
+    public boolean isUseDefaultModelIfModelNotSetting() {
+        return useDefaultModelIfModelNotSetting;
+    }
+
+    public void setUseDefaultModelIfModelNotSetting(boolean useDefaultModelIfModelNotSetting) {
+        this.useDefaultModelIfModelNotSetting = useDefaultModelIfModelNotSetting;
     }
 }
 

@@ -1,13 +1,7 @@
 plugins {
-    id 'org.springframework.boot' version '2.1.4.RELEASE'
+    id 'org.springframework.boot' version '2.3.5.RELEASE'
     id "com.jfrog.bintray" version "1.8.4"
-    id 'com.gradle.build-scan' version "2.2"
     id 'java'
-}
-
-buildScan {
-    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-    termsOfServiceAgree = 'yes'
 }
 
 apply plugin: 'io.spring.dependency-management'

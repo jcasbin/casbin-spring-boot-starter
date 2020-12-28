@@ -1,8 +1,8 @@
 package org.casbin.utils;
 
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 
@@ -20,18 +20,18 @@ import java.nio.charset.StandardCharsets;
  * @description:
  * @date 2019/9/24 17:06
  */
-@Slf4j
-@UtilityClass
 public class FileUtils {
 
-    private String removePrefix(String str, String prefix) {
+    private final static Logger logger = LoggerFactory.getLogger(FileUtils.class);
+
+    private static String removePrefix(String str, String prefix) {
         if (str.startsWith(prefix)) {
             return str.substring(prefix.length());
         }
         return str;
     }
 
-    public File getFile(String filePath) {
+    public static File getFile(String filePath) {
         File template = new File(removePrefix(filePath, "classpath:"));
         if (template.exists()) {
             return template;
@@ -40,7 +40,7 @@ public class FileUtils {
         }
     }
 
-    public InputStream getFileAsInputStream(String filePath) {
+    public static InputStream getFileAsInputStream(String filePath) {
         File file = getFile(filePath);
         try {
             if (file != null && file.exists()) {
@@ -57,9 +57,11 @@ public class FileUtils {
         }
     }
 
-    public String getFileAsText(String filePath) {
+    public static String getFileAsText(String filePath) {
         try (InputStream inputStream = getFileAsInputStream(filePath);) {
-            if (inputStream != null) return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            if (inputStream != null) {
+                return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
