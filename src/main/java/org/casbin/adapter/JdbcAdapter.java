@@ -29,6 +29,7 @@ public class JdbcAdapter implements FilteredAdapter {
     private final static Logger logger = LoggerFactory.getLogger(JdbcAdapter.class);
 
     private final static String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS casbin_rule (" +
+            "    id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "+
             "    ptype varchar(255) NOT NULL," +
             "    v0    varchar(255) DEFAULT NULL," +
             "    v1    varchar(255) DEFAULT NULL," +
@@ -40,7 +41,7 @@ public class JdbcAdapter implements FilteredAdapter {
     private final static String DROP_TABLE_SQL = "DROP TABLE IF EXISTS casbin_rule";
     private final static String DELETE_TABLE_CONTENT_SQL = "DELETE FROM casbin_rule";
     private final static String LOAD_POLICY_SQL = "SELECT * FROM casbin_rule";
-    private final static String INSERT_POLICY_SQL = "INSERT INTO casbin_rule VALUES(?, ?, ?, ?, ?, ?, ?)";
+    private final static String INSERT_POLICY_SQL = "INSERT INTO casbin_rule(ptype, v0, v1, v2, v3, v4, v5) VALUES(?, ?, ?, ?, ?, ?, ?)";
     private final static String DELETE_POLICY_SQL = "DELETE FROM casbin_rule WHERE ptype = ? ";
 
     protected JdbcTemplate jdbcTemplate;

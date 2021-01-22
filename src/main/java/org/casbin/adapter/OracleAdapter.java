@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class OracleAdapter extends JdbcAdapter {
 
     private final static String INIT_TABLE_SQL = "CREATE TABLE CASBIN_RULE (" +
+            "  ID int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "+
             "  PTYPE VARCHAR2(255) NOT NULL ," +
             "  V0 VARCHAR2(255) DEFAULT NULL ," +
             "  V1 VARCHAR2(255) DEFAULT NULL ," +
