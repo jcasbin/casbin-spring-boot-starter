@@ -104,7 +104,7 @@ public class JdbcAdapter implements FilteredAdapter {
     /**
      * 清空表
      * 
-     * Delete table
+     * Clear table
      */
     protected void deleteTableContent() {
         jdbcTemplate.execute(getDeleteTableContentSql());
