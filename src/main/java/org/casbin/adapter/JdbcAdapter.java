@@ -85,6 +85,8 @@ public class JdbcAdapter implements FilteredAdapter {
 
     /**
      * 初始化表结构
+     * 
+     * Initialize the table structure
      */
     protected void initTable() {
         jdbcTemplate.execute(getInitTableSql());
@@ -92,6 +94,8 @@ public class JdbcAdapter implements FilteredAdapter {
 
     /**
      * 删除表
+     * 
+     * Delete table
      */
     protected void dropTable() {
         jdbcTemplate.execute(getDropTableSql());
@@ -99,6 +103,8 @@ public class JdbcAdapter implements FilteredAdapter {
 
     /**
      * 清空表
+     * 
+     * Clear table
      */
     protected void deleteTableContent() {
         jdbcTemplate.execute(getDeleteTableContentSql());
@@ -107,6 +113,9 @@ public class JdbcAdapter implements FilteredAdapter {
     /**
      * 从存储加载所有策略规则
      * 加载时会合并重复数据
+     * 
+     * Load all policy rules from storage
+     * Duplicate data will be merged when loading
      *
      * @param model the model.
      */
@@ -137,6 +146,8 @@ public class JdbcAdapter implements FilteredAdapter {
     /**
      * 将所有策略规则保存到存储
      * 保存时会合并重复数据
+     * 
+     * Save all policy rules to storage, merge duplicate data when saving
      *
      * @param model the model.
      */
@@ -178,6 +189,8 @@ public class JdbcAdapter implements FilteredAdapter {
 
     /**
      * 将策略规则添加到存储
+     * 
+     * Add policy rules to storage
      *
      * @param sec   the section, "p" or "g".
      * @param ptype the policy type, "p", "p2", .. or "g", "g2", ..
@@ -199,6 +212,8 @@ public class JdbcAdapter implements FilteredAdapter {
 
     /**
      * 从存储中删除策略规则
+     * 
+     * Delete policy rule from storage
      *
      * @param sec   the section, "p" or "g".
      * @param ptype the policy type, "p", "p2", .. or "g", "g2", ..
@@ -215,6 +230,9 @@ public class JdbcAdapter implements FilteredAdapter {
 
     /**
      * 从存储中删除当前策略指定索引后匹配的数据
+     * 
+     * Delete the matching data after the index 
+     * specified by the current policy from the storage
      *
      * @param sec         the section, "p" or "g".
      * @param ptype       the policy type, "p", "p2", .. or "g", "g2", ..
