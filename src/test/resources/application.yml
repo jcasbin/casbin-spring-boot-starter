@@ -46,8 +46,9 @@ casbin:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/casbin
+    url: jdbc:mysql://localhost:3306/casbin?useSSL=false
     username: root
+    password: casbin_test
   redis:
     host: localhost
     port: 6379
