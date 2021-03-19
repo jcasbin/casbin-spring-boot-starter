@@ -52,6 +52,9 @@ public class CasbinRedisWatcherAutoConfiguration {
 
     /**
      * 消息监听器适配器，绑定消息处理器，利用反射技术调用消息处理器的业务方法
+     * 
+     * Message listener adapter, bind message processor,
+     * use reflection technology to call the business method of message processor
      */
     @Bean
     @ConditionalOnMissingBean
@@ -63,6 +66,11 @@ public class CasbinRedisWatcherAutoConfiguration {
      * redis消息监听器容器
      * 可以添加多个监听不同话题的redis监听器，只需要把消息监听器和相应的消息订阅处理器绑定，该消息监听器
      * 通过反射技术调用消息订阅处理器的相关方法进行一些业务处理
+     * 
+     * redis message listener container
+     * You can add multiple redis listeners that monitor different topics. You only need to bind the message 
+     * listener to the corresponding message subscription processor. The message listener use reflection technology 
+     * to call the relevant methods of the message subscription processor to perform some business processing
      */
     @Bean
     @ConditionalOnMissingBean
@@ -74,6 +82,7 @@ public class CasbinRedisWatcherAutoConfiguration {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         //订阅CASBIN_POLICY_TOPIC通道
+        // Subscribe to the CASBIN_POLICY_TOPIC channel
         container.addMessageListener(listenerAdapter, new ChannelTopic(CASBIN_POLICY_TOPIC));
         return container;
     }

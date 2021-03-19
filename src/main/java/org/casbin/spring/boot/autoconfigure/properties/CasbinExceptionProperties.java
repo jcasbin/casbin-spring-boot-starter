@@ -15,6 +15,8 @@ public class CasbinExceptionProperties {
 
     /**
      * 删除策略失败时是否抛出异常
+     * 
+     * Whether to throw an exception when the delete strategy fails
      */
     private boolean removePolicyFailed = false;
 
