@@ -6,7 +6,6 @@ plugins {
 
 apply plugin: 'io.spring.dependency-management'
 apply from: "maven.gradle"
-apply from: "travis.gradle"
 apply from: "bintray.gradle"
 apply from: "jacoco.gradle"
 

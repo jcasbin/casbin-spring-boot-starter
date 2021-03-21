@@ -1,7 +1,7 @@
 # Casbin Spring Boot Starter
 
 [![Codecov branch](https://img.shields.io/codecov/c/github/jcasbin/casbin-spring-boot-starter/master.svg?logo=codecov&style=flat-square)](https://codecov.io/gh/jcasbin/casbin-spring-boot-starter)
-[![Build Status](https://img.shields.io/travis/com/jcasbin/casbin-spring-boot-starter/master.svg?style=flat-square)](https://travis-ci.com/jcasbin/casbin-spring-boot-starter)
+[![GitHub Actions](https://github.com/jcasbin/casbin-spring-boot-starter/workflows/build/badge.svg)](https://github.com/jcasbin/casbin-spring-boot-starter/actions)
 [![Maven Central](https://img.shields.io/maven-central/v/org.casbin/casbin-spring-boot-starter.svg?style=flat-square&color=brightgreen)](https://maven-badges.herokuapp.com/maven-central/org.casbin/casbin-spring-boot-starter/)
 [![Bintray](https://img.shields.io/bintray/v/casbin/maven/casbin-spring-boot-starter.svg?style=flat-square&color=blue)](https://bintray.com/casbin/maven/casbin-spring-boot-starter/_latestVersion)
 [![License](https://img.shields.io/github/license/jcasbin/casbin-spring-boot-starter.svg?style=flat-square&color=blue)](http://www.apache.org/licenses/LICENSE-2.0.txt)
