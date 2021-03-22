@@ -21,6 +21,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
+import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DatabaseDriver;
 import org.springframework.context.annotation.Bean;
@@ -80,21 +81,22 @@ public class CasbinAutoConfiguration {
     @ConditionalOnMissingBean
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public Adapter autoConfigJdbcAdapter(JdbcTemplate jdbcTemplate, CasbinProperties properties, CasbinExceptionProperties exceptionProperties) {
-        String databaseName = getDatabaseName(jdbcTemplate.getDataSource());
-        CasbinDataSourceInitializationMode initializeSchema = properties.getInitializeSchema();
-        boolean autoCreateTable = initializeSchema == CasbinDataSourceInitializationMode.CREATE;
-        switch (databaseName) {
-            case "mysql":
-            case "h2":
-            case "postgresql":
-                return new JdbcAdapter(jdbcTemplate, exceptionProperties, autoCreateTable);
-            case "oracle":
-                return new OracleAdapter(jdbcTemplate, exceptionProperties, autoCreateTable);
-            case "db2":
-                return new DB2Adapter(jdbcTemplate, exceptionProperties, autoCreateTable);
-            default:
-                throw new CasbinAdapterException("Can't find " + databaseName + " jdbc adapter");
-        }
+        return getAdapter(jdbcTemplate, properties, exceptionProperties);
+    }
+
+    /**
+     * 自动配置其他的JDBC适配器
+     *
+     * Automatic configuration of JDBC adapter
+     */
+    @Bean
+    @ConditionalOnProperty(name = "casbin.storeType", havingValue = "jdbc", matchIfMissing = true)
+    @ConditionalOnBean(JdbcTemplate.class)
+    @ConditionalOnMissingBean
+    @QuartzDataSource
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    public Adapter autoConfigJdbcAdapterByQuartz(JdbcTemplate jdbcTemplate, CasbinProperties properties, CasbinExceptionProperties exceptionProperties) {
+        return getAdapter(jdbcTemplate, properties, exceptionProperties);
     }
 
     /**
@@ -161,6 +163,27 @@ public class CasbinAutoConfiguration {
             return databaseDriver.getId();
         } catch (MetaDataAccessException ex) {
             throw new IllegalStateException("Unable to detect database type", ex);
+        }
+    }
+
+    /**
+     * Configuration of JDBC adapter
+     */
+    private Adapter getAdapter(JdbcTemplate jdbcTemplate, CasbinProperties properties, CasbinExceptionProperties exceptionProperties) {
+        String databaseName = getDatabaseName(jdbcTemplate.getDataSource());
+        CasbinDataSourceInitializationMode initializeSchema = properties.getInitializeSchema();
+        boolean autoCreateTable = initializeSchema == CasbinDataSourceInitializationMode.CREATE;
+        switch (databaseName) {
+            case "mysql":
+            case "h2":
+            case "postgresql":
+                return new JdbcAdapter(jdbcTemplate, exceptionProperties, autoCreateTable);
+            case "oracle":
+                return new OracleAdapter(jdbcTemplate, exceptionProperties, autoCreateTable);
+            case "db2":
+                return new DB2Adapter(jdbcTemplate, exceptionProperties, autoCreateTable);
+            default:
+                throw new CasbinAdapterException("Can't find " + databaseName + " jdbc adapter");
         }
     }
 }
