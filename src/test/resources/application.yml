@@ -36,7 +36,7 @@ casbin:
   #如开启该机制,则storeType必须为jdbc,否则该配置无效
   #Whether to turn on the CasbinWatcher mechanism, it is not turned on by default
   #If the mechanism is turned on, the storeType must be jdbc, otherwise the configuration is invalid
-  enableWatcher: false
+  enableWatcher: true
   #CasbinWatcher通知方式,默认使用Redis进行通知同步,暂时仅支持Redis
   #开启Watcher后需手动添加spring-boot-starter-data-redis依赖
   #CasbinWatcher notification method, Redis is used by default for notification synchronization, 
