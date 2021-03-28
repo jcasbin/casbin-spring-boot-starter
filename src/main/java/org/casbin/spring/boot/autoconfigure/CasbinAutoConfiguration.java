@@ -3,6 +3,7 @@ package org.casbin.spring.boot.autoconfigure;
 import org.casbin.adapter.DB2Adapter;
 import org.casbin.adapter.JdbcAdapter;
 import org.casbin.adapter.OracleAdapter;
+import org.casbin.annotation.CasbinDataSource;
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.exception.CasbinModelConfigNotFoundException;
 import org.casbin.jcasbin.main.Enforcer;
@@ -15,6 +16,7 @@ import org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties
 import org.casbin.spring.boot.autoconfigure.properties.CasbinProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -32,6 +34,7 @@ import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.io.InputStream;
+import java.sql.DatabaseMetaData;
 
 /**
  * @author fangzhengjin
@@ -52,7 +55,7 @@ public class CasbinAutoConfiguration {
 
     /**
      * 自动配置文件存储适配器
-     * 
+     * <p>
      * Automatic configuration file storage adapter
      */
     @Bean
@@ -71,7 +74,7 @@ public class CasbinAutoConfiguration {
 
     /**
      * 自动配置JDBC适配器
-     * 
+     * <p>
      * Automatic configuration of JDBC adapter
      */
     @Bean
@@ -79,19 +82,25 @@ public class CasbinAutoConfiguration {
     @ConditionalOnBean(JdbcTemplate.class)
     @ConditionalOnMissingBean
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public Adapter autoConfigJdbcAdapter(JdbcTemplate jdbcTemplate, CasbinProperties properties, CasbinExceptionProperties exceptionProperties) {
-        String databaseName = getDatabaseName(jdbcTemplate.getDataSource());
+    public Adapter autoConfigJdbcAdapter(
+            @CasbinDataSource ObjectProvider<DataSource> casbinDataSource,
+            JdbcTemplate jdbcTemplate,
+            CasbinProperties properties,
+            CasbinExceptionProperties exceptionProperties
+    ) {
+        JdbcTemplate jdbcTemplateToUse = getJdbcTemplate(jdbcTemplate, casbinDataSource);
+        String databaseName = getDatabaseName(jdbcTemplateToUse.getDataSource());
         CasbinDataSourceInitializationMode initializeSchema = properties.getInitializeSchema();
         boolean autoCreateTable = initializeSchema == CasbinDataSourceInitializationMode.CREATE;
         switch (databaseName) {
             case "mysql":
             case "h2":
             case "postgresql":
-                return new JdbcAdapter(jdbcTemplate, exceptionProperties, autoCreateTable);
+                return new JdbcAdapter(jdbcTemplateToUse, exceptionProperties, autoCreateTable);
             case "oracle":
-                return new OracleAdapter(jdbcTemplate, exceptionProperties, autoCreateTable);
+                return new OracleAdapter(jdbcTemplateToUse, exceptionProperties, autoCreateTable);
             case "db2":
-                return new DB2Adapter(jdbcTemplate, exceptionProperties, autoCreateTable);
+                return new DB2Adapter(jdbcTemplateToUse, exceptionProperties, autoCreateTable);
             default:
                 throw new CasbinAdapterException("Can't find " + databaseName + " jdbc adapter");
         }
@@ -99,7 +108,7 @@ public class CasbinAutoConfiguration {
 
     /**
      * 自动配置enforcer
-     * 
+     * <p>
      * Automatic configuration of the enforcer
      */
     @Bean
@@ -113,7 +122,7 @@ public class CasbinAutoConfiguration {
         } catch (CasbinModelConfigNotFoundException e) {
             /*
              *  如果未设置本地model文件地址或默认路径未找到文件,使用默认rbac配置
-             *  
+             *
              *  If the local model file address is not set or the file is not found in the default path,
              *  the default rbac configuration is used
              */
@@ -145,15 +154,15 @@ public class CasbinAutoConfiguration {
 
     /**
      * 获取当前使用数据库类型
-     * 
+     * <p>
      * Get the current database type
      */
     private static String getDatabaseName(DataSource dataSource) {
         try {
             String productName = JdbcUtils.
                     commonDatabaseName(JdbcUtils.extractDatabaseMetaData(
-                            dataSource, "getDatabaseProductName"
-                    ).toString());
+                            dataSource, DatabaseMetaData::getDatabaseProductName
+                    ));
             DatabaseDriver databaseDriver = DatabaseDriver.fromProductName(productName);
             if (databaseDriver == DatabaseDriver.UNKNOWN) {
                 throw new IllegalStateException("Unable to detect database type");
@@ -162,5 +171,10 @@ public class CasbinAutoConfiguration {
         } catch (MetaDataAccessException ex) {
             throw new IllegalStateException("Unable to detect database type", ex);
         }
+    }
+
+    private static JdbcTemplate getJdbcTemplate(JdbcTemplate jdbcTemplate, ObjectProvider<DataSource> dataSource) {
+        DataSource dataSourceIfAvailable = dataSource.getIfAvailable();
+        return (dataSourceIfAvailable != null) ? new JdbcTemplate(dataSourceIfAvailable) : jdbcTemplate;
     }
 }
