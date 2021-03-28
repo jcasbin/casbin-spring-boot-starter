@@ -92,6 +92,7 @@ public class CasbinAutoConfiguration {
         String databaseName = getDatabaseName(jdbcTemplateToUse.getDataSource());
         CasbinDataSourceInitializationMode initializeSchema = properties.getInitializeSchema();
         boolean autoCreateTable = initializeSchema == CasbinDataSourceInitializationMode.CREATE;
+        logger.info("Casbin current use database product: {}", databaseName);
         switch (databaseName) {
             case "mysql":
             case "h2":
@@ -175,6 +176,12 @@ public class CasbinAutoConfiguration {
 
     private static JdbcTemplate getJdbcTemplate(JdbcTemplate jdbcTemplate, ObjectProvider<DataSource> dataSource) {
         DataSource dataSourceIfAvailable = dataSource.getIfAvailable();
-        return (dataSourceIfAvailable != null) ? new JdbcTemplate(dataSourceIfAvailable) : jdbcTemplate;
+        if (dataSourceIfAvailable != null) {
+            logger.info("Discover the custom Casbin data source.");
+            return new JdbcTemplate(dataSourceIfAvailable);
+        } else {
+            logger.info("Casbin is using the data source managed by Spring.");
+            return jdbcTemplate;
+        }
     }
 }
