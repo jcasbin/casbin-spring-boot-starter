@@ -15,29 +15,39 @@
 Casbin Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成[jCasbin](https://github.com/casbin/jcasbin)。
 
 ## 如何使用
+
 1. 在 Spring Boot 项目中加入```casbin-spring-boot-starter```依赖
 
 ```Maven```
+
 ```xml
+
 <dependency>
-   <groupId>org.casbin</groupId>
-   <artifactId>casbin-spring-boot-starter</artifactId>
-   <version>version</version>
+    <groupId>org.casbin</groupId>
+    <artifactId>casbin-spring-boot-starter</artifactId>
+    <version>version</version>
 </dependency>
 ```
+
 ```Gradle```
+
 ```groovy
 implementation 'org.casbin:casbin-spring-boot-starter:version'
 ```
+
 2. 在需要使用的地方注入Enforcer
+
 ```java
+
 @Component
-public class Test{
+public class Test {
     @Autowired
     private Enforcer enforcer;
 }
 ```
+
 3. 添加配置
+
 ```yaml
 casbin:
   #是否开启Casbin,默认开启
@@ -71,15 +81,19 @@ casbin:
   exception:
     ... 详见附表-异常设定
 ```
+
 4. 最简配置
 
 - 不使用其他附加组件配置
+
 ```yaml
 casbin:
   #如果您使用的模型配置文件位于此地址,则无需任何配置
   model: classpath:casbin/model.conf
 ```
+
 - 开启Watcher
+
 ```yaml
 casbin:
   #如果您使用的模型配置文件位于此地址,则无需该配置
@@ -87,6 +101,23 @@ casbin:
   #开启Watcher后,默认使用RedisWatcher需手动添加spring-boot-starter-data-redis依赖
   enableWatcher: true
 ```
+
+5. 使用自定义独立数据源
+
+- 只需要在注入自定义数据源时增加```@CasbinDataSource```注解
+
+```java
+
+@Configuration
+public class CasbinDataSourceConfiguration {
+    @Bean
+    @CasbinDataSource
+    public DataSource casbinDataSource() {
+        return DataSourceBuilder.create().url("jdbc:h2:mem:casbin").build();
+    }
+}
+```
+
 #### 附表：
 
 - 异常设定(casbin.exception)
@@ -95,6 +126,12 @@ casbin:
 | ------------------ | -------------------------- | ------- |
 | removePolicyFailed | 删除策略失败时是否抛出异常 | false   |
 
-
-
 ##### 注意: 如果您没有设置其他数据源,或为H2设定存储文件位置,则默认使用H2将数据存储于内存中
+
+#### 通知:
+
+自版本0.0.11开始, casbin-spring-boot-starter 默认为数据库表结构添加ID字段
+
+0.0.11之前的版本升级时, 需要用户手动添加ID字段
+
+有关详细信息, 请参阅: https://github.com/jcasbin/casbin-spring-boot-starter/issues/21

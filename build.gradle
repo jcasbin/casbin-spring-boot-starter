@@ -36,8 +36,6 @@ dependencies {
 
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
     testRuntimeOnly 'mysql:mysql-connector-java:5.1.47'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

@@ -12,34 +12,43 @@
 
 ## English|[中文](https://github.com/jcasbin/casbin-spring-boot-starter/blob/master/README_CN.md)
 
-Casbin Spring Boot Starter is designed to help you easily integrate [jCasbin](https://github.com/casbin/jcasbin) into your Spring Boot project.
+Casbin Spring Boot Starter is designed to help you easily integrate [jCasbin](https://github.com/casbin/jcasbin) into
+your Spring Boot project.
 
 ## how to use
+
 1. Add ```casbin-spring-boot-starter``` to the Spring Boot project.
 
 ```Maven```
 
 ```xml
+
 <dependency>
     <groupId>org.casbin</groupId>
     <artifactId>casbin-spring-boot-starter</artifactId>
     <version>version</version>
 </dependency>
 ```
+
 ```Gradle```
 
 ```groovy
 implementation 'org.casbin:casbin-spring-boot-starter:version'
 ```
+
 2. Inject the Enforcer where you need to use it
+
 ```java
+
 @Component
-public class Test{
+public class Test {
     @Autowired
     private Enforcer enforcer;
 }
 ```
+
 3. Add configuration
+
 ```yaml
 casbin:
   #Whether to enable Casbin, it is enabled by default.
@@ -69,17 +78,22 @@ casbin:
   #CasbinWatcher notification mode, defaults to use Redis for notification synchronization, temporarily only supports Redis
   #After opening Watcher, you need to manually add spring-boot-starter-data-redis dependency.
   watcherType: redis
-  exception: 
+  exception:
     ... See Schedule A for exception settings.
 ```
+
 4. The simplest configuration
+
 - Do not use other add-on configurations
+
 ```yaml
 casbin:
   #If you are using a model profile at this address, no configuration is required
   model: classpath:casbin/model.conf
 ```
--  Turn on Watcher
+
+- Turn on Watcher
+
 ```yaml
 casbin:
   #If the model profile you are using is located at this address, you do not need this configuration
@@ -87,6 +101,23 @@ casbin:
   #When you open Watcher, the default use of RedisWatcher requires manual addition of spring-boot-starter-data-redis dependency.
   enableWatcher: true
 ```
+
+5. Use custom independent data sources
+
+- Only increase ```@CasbinDataSource``` annotation when injecting custom data source
+
+```java
+
+@Configuration
+public class CasbinDataSourceConfiguration {
+    @Bean
+    @CasbinDataSource
+    public DataSource casbinDataSource() {
+        return DataSourceBuilder.create().url("jdbc:h2:mem:casbin").build();
+    }
+}
+```
+
 ##### Schedule A
 
 - ExceptionSettings(casbin.exception)
@@ -95,11 +126,12 @@ casbin:
 | ------------------ | ------------------------------------------------ | ------- |
 | removePolicyFailed | Throws an exception when the delete policy fails | false   |
 
-
-
 ##### Note: If you do not set another data source, or set the storage file location for H2, the data is stored in memory by default using H2.
 
 #### Notice:
+
 Since version 0.0.11, casbin-spring-boot-starter adds an id field to the database table structure by default.
+
 The version before 0.0.11 is upgraded to version 0.0.11 and later requires the user to manually add the id field.
+
 See https://github.com/jcasbin/casbin-spring-boot-starter/issues/21 for details

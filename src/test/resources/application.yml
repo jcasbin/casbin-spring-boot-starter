@@ -44,6 +44,8 @@ casbin:
   #After opening Watcher, you need to manually add spring-boot-starter-data-redis dependency
   watcherType: redis
 spring:
+  #虽然这里配置了数据源,但在单元测试时,使用自定义数据源切换到了H2
+  #Although the data source is configured here, the custom data source is switched to H2 when the unit test is tested.
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/casbin?useSSL=false
