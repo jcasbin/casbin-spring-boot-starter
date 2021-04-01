@@ -7,15 +7,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @version V1.0
  * @title: CasbinExceptionProperties
  * @package org.casbin.spring.boot.autoconfigure.properties
- * @description: 异常设置
+ * @description:
  * @date 2019/9/24 15:25
  */
 @ConfigurationProperties("casbin.exception")
 public class CasbinExceptionProperties {
 
     /**
-     * 删除策略失败时是否抛出异常
-     * 
      * Whether to throw an exception when the delete strategy fails
      */
     private boolean removePolicyFailed = false;

@@ -47,9 +47,6 @@ class CasbinRule {
     }
 
     /**
-     * 将model转换为CasbinRule
-     * 转换过程将会合并重复数据
-     * 
      * Converting model to CasbinRule
      * conversion process will merge duplicate data
      */

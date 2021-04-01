@@ -18,65 +18,43 @@ import java.io.InputStream;
 @ConfigurationProperties("casbin")
 public class CasbinProperties {
     /**
-     * 启用Casbin
-     * 
      * Enable Casbin
      */
     private boolean enableCasbin = true;
     /**
-     * 是否使用同步的Enforcer
-     * 
      * Whether to use a synchronized Enforcer
      */
     private boolean useSyncedEnforcer = false;
     /**
-     * 本地model文件
-     * 
      * Local model file
      */
     private String model = "classpath:casbin/model.conf";
     /**
-     * 本地policy文件
-     * 
      * Local policy file
      */
     private String policy = "classpath:casbin/policy.csv";
     /**
-     * 存储策略
-     * 
      * Storage strategy
      */
     private CasbinStoreType storeType = CasbinStoreType.JDBC;
     /**
-     * Watcher同步策略
-     * 
      * Watcher synchronization strategy
      */
     private CasbinWatcherType watcherType = CasbinWatcherType.REDIS;
     /**
-     * 数据表初始化策略
-     * 
      * Data table initialization strategy
      */
     private CasbinDataSourceInitializationMode initializeSchema = CasbinDataSourceInitializationMode.CREATE;
     /**
-     * 是否使用Watcher进行策略同步
-     * 
      * Whether to use Watcher for strategy synchronization
      */
     private boolean enableWatcher = false;
     /**
-     * 仅在适配器支持该功能时配置才会生效
-     * 可通过enforcer.enableAutoSave(true)手动切换
-     * 
      * The configuration will only take effect if the adapter supports this function
      * Can be manually switched through enforcer.enableAutoSave(true)
      */
     private boolean autoSave = true;
     /**
-     * 如果未设置本地model文件地址或默认路径未找到文件
-     * 使用默认rbac配置
-     * 
      * If the local model file address is not set or the file is not found in the default path
      * Use default rbac configuration
      */

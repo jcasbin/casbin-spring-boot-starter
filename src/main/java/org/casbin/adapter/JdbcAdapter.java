@@ -84,8 +84,6 @@ public class JdbcAdapter implements FilteredAdapter {
     }
 
     /**
-     * 初始化表结构
-     * 
      * Initialize the table structure
      */
     protected void initTable() {
@@ -93,8 +91,6 @@ public class JdbcAdapter implements FilteredAdapter {
     }
 
     /**
-     * 删除表
-     * 
      * Delete table
      */
     protected void dropTable() {
@@ -102,8 +98,6 @@ public class JdbcAdapter implements FilteredAdapter {
     }
 
     /**
-     * 清空表
-     * 
      * Clear table
      */
     protected void deleteTableContent() {
@@ -111,9 +105,6 @@ public class JdbcAdapter implements FilteredAdapter {
     }
 
     /**
-     * 从存储加载所有策略规则
-     * 加载时会合并重复数据
-     * 
      * Load all policy rules from storage
      * Duplicate data will be merged when loading
      *
@@ -123,12 +114,12 @@ public class JdbcAdapter implements FilteredAdapter {
     @Override
     public void loadPolicy(Model model) {
         List<CasbinRule> casbinRules = jdbcTemplate.query(getLoadPolicySql(), BeanPropertyRowMapper.newInstance(CasbinRule.class));
-        // 按ptype对策略进行分组,并合并重复数据
+        // group the policies by ptype and merge the duplicate data
         Map<String, List<ArrayList<String>>> policies = casbinRules.parallelStream().distinct()
                 .map(CasbinRule::toPolicy)
                 .collect(Collectors.toMap(x -> x.get(0), y -> {
                     ArrayList<ArrayList<String>> lists = new ArrayList<>();
-                    // 去除list第一项策略类型
+                    // remove the first policy type in the list
                     y.remove(0);
                     lists.add(y);
                     return lists;
@@ -136,7 +127,7 @@ public class JdbcAdapter implements FilteredAdapter {
                     oldValue.addAll(newValue);
                     return oldValue;
                 }));
-        // 对分组的策略进行加载
+        // load grouped policies
         policies.keySet().forEach(
                 k -> model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k))
         );
@@ -144,9 +135,6 @@ public class JdbcAdapter implements FilteredAdapter {
     }
 
     /**
-     * 将所有策略规则保存到存储
-     * 保存时会合并重复数据
-     * 
      * Save all policy rules to storage, merge duplicate data when saving
      *
      * @param model the model.
@@ -188,8 +176,6 @@ public class JdbcAdapter implements FilteredAdapter {
     }
 
     /**
-     * 将策略规则添加到存储
-     * 
      * Add policy rules to storage
      *
      * @param sec   the section, "p" or "g".
@@ -211,8 +197,6 @@ public class JdbcAdapter implements FilteredAdapter {
     }
 
     /**
-     * 从存储中删除策略规则
-     * 
      * Delete policy rule from storage
      *
      * @param sec   the section, "p" or "g".
@@ -229,9 +213,7 @@ public class JdbcAdapter implements FilteredAdapter {
     }
 
     /**
-     * 从存储中删除当前策略指定索引后匹配的数据
-     * 
-     * Delete the matching data after the index 
+     * Delete the matching data after the index
      * specified by the current policy from the storage
      *
      * @param sec         the section, "p" or "g".

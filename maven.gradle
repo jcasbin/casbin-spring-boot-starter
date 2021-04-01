@@ -9,7 +9,7 @@ javadoc {
     options {
         encoding "UTF-8"
         charSet 'UTF-8'
-        //忽略自定义标注
+        // ignore custom tags
         tags = [
                 "title:a:title",
                 "package:a:package",
@@ -26,7 +26,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            //GAV配置
+            // GAV configuration
             from components.java
             artifact sourceJar
             artifact javadocJar
@@ -35,7 +35,7 @@ publishing {
                 artifactId = ARTIFACT_ID
                 version = VERSION_CODE
             }
-            //将动态依赖版本解析为实际引用版本 如 1.2.+ -> 1.2.10
+            // resolve the dynamic dependency version into the actual reference version, e.g., 1.2.+ -> 1.2.10
             versionMapping {
                 usage("java-api") {
                     fromResolutionOf("runtimeClasspath")
@@ -44,7 +44,7 @@ publishing {
                     fromResolutionResult()
                 }
             }
-            //pom相关信息
+            // pom relative information
             pom {
                 name = ARTIFACT_ID
                 description = POM_DESCRIPTION
