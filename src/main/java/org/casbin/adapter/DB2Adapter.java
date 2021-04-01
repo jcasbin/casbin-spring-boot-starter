@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /**
  * @author liuyunsh@cn.ibm.com
  * @version V1.0
- * @date 2019年4月23日
+ * @date 2019/4/23
  */
 public class DB2Adapter extends JdbcAdapter {
 

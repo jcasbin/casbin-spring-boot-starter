@@ -10,14 +10,10 @@ package org.casbin.spring.boot.autoconfigure.properties;
  */
 public enum CasbinDataSourceInitializationMode {
     /**
-     * 自动创建数据表
-     * 
      * Automatically create data tables
      */
     CREATE,
     /**
-     * 启动时不自动建表
-     * 
      * Do not automatically build tables
      */
     NEVER

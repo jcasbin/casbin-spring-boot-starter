@@ -10,8 +10,6 @@ package org.casbin.spring.boot.autoconfigure.properties;
  */
 public enum CasbinWatcherType {
     /**
-     * 使用Redis通知同步策略
-     * 
      * Use Redis notification synchronization strategy
      */
     REDIS,

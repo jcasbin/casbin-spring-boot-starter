@@ -54,20 +54,13 @@ public class CasbinAutoConfiguration {
     private final static Logger logger = LoggerFactory.getLogger(CasbinAutoConfiguration.class);
 
     /**
-     * 自动配置文件存储适配器
-     * <p>
      * Automatic configuration file storage adapter
      */
     @Bean
     @ConditionalOnProperty(name = "casbin.storeType", havingValue = "file")
     @ConditionalOnMissingBean
     public Adapter autoConfigFileAdapter(CasbinProperties properties) {
-        /*
-         * 选择使用文件存储并正确设置了policy文件位置，则创建文件适配器
-         *
-         * If the file storage is chosen and the policy file location is set correctly,
-         * then create a file adapter
-         */
+        // if the file storage is chosen and the policy file location is set correctly, then create a file adapter
         if (!StringUtils.isEmpty(properties.getPolicy())) {
             try (InputStream policyInputStream = properties.getPolicyInputStream()) {
                 return new FileAdapter(policyInputStream);
@@ -78,8 +71,6 @@ public class CasbinAutoConfiguration {
     }
 
     /**
-     * 自动配置JDBC适配器
-     * <p>
      * Automatic configuration of JDBC adapter
      */
     @Bean
@@ -113,8 +104,6 @@ public class CasbinAutoConfiguration {
     }
 
     /**
-     * 自动配置enforcer
-     * <p>
      * Automatic configuration of the enforcer
      */
     @Bean
@@ -126,12 +115,7 @@ public class CasbinAutoConfiguration {
             String modelContext = properties.getModelContext();
             model.loadModelFromText(modelContext);
         } catch (CasbinModelConfigNotFoundException e) {
-            /*
-             *  如果未设置本地model文件地址或默认路径未找到文件,使用默认rbac配置
-             *
-             *  If the local model file address is not set or the file is not found in the default path,
-             *  the default rbac configuration is used
-             */
+            // if the local model file address is not set or the file is not found in the default path, the default rbac configuration is used
             if (!properties.isUseDefaultModelIfModelNotSetting()) {
                 throw e;
             }
@@ -159,8 +143,6 @@ public class CasbinAutoConfiguration {
     }
 
     /**
-     * 获取当前使用数据库类型
-     * <p>
      * Get the current database type
      */
     private static String getDatabaseName(DataSource dataSource) {
