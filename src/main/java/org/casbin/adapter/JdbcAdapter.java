@@ -123,12 +123,12 @@ public class JdbcAdapter implements FilteredAdapter {
     @Override
     public void loadPolicy(Model model) {
         List<CasbinRule> casbinRules = jdbcTemplate.query(getLoadPolicySql(), BeanPropertyRowMapper.newInstance(CasbinRule.class));
-        // 按ptype对策略进行分组,并合并重复数据
+        // group the policies by ptype and merge the duplicate data
         Map<String, List<ArrayList<String>>> policies = casbinRules.parallelStream().distinct()
                 .map(CasbinRule::toPolicy)
                 .collect(Collectors.toMap(x -> x.get(0), y -> {
                     ArrayList<ArrayList<String>> lists = new ArrayList<>();
-                    // 去除list第一项策略类型
+                    // remove the first policy type in the list
                     y.remove(0);
                     lists.add(y);
                     return lists;
@@ -136,7 +136,7 @@ public class JdbcAdapter implements FilteredAdapter {
                     oldValue.addAll(newValue);
                     return oldValue;
                 }));
-        // 对分组的策略进行加载
+        // load grouped policies
         policies.keySet().forEach(
                 k -> model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k))
         );

@@ -81,8 +81,11 @@ public class CasbinRedisWatcherAutoConfiguration {
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        //订阅CASBIN_POLICY_TOPIC通道
-        // Subscribe to the CASBIN_POLICY_TOPIC channel
+        /*
+         * 订阅CASBIN_POLICY_TOPIC通道
+         *
+         * Subscribe to the CASBIN_POLICY_TOPIC channel
+         */
         container.addMessageListener(listenerAdapter, new ChannelTopic(CASBIN_POLICY_TOPIC));
         return container;
     }

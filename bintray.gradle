@@ -1,5 +1,5 @@
-//上传到jcenter至少需要四个文件，除了打包的jar之外，
-//还需要pom和javadoc，source，否则是通不过jcenter审核的。
+// At least four files are required to upload to jcenter, in addition to the jar package,
+// pom, javadoc, source are also required, otherwise it will fail the review
 apply plugin: 'com.jfrog.bintray'
 
 def getBintrayUserProperty() {
@@ -19,30 +19,30 @@ bintray {
     dryRun = false
     publish = true
     pkg {
-        //你在bintray建立的仓库类型
+        // repository type in your bintray platform
         repo = 'maven'
-        //包名
+        // package name
         name = ARTIFACT_ID
-        //描述
+        // description
         desc = POM_DESCRIPTION
-        //站点地址
+        // web site address
         websiteUrl = POM_URL
-        //缺陷提交地址
+        // issue submission address
         issueTrackerUrl = ISSUE_URL
-        //版本库地址
+        // git repository address
         vcsUrl = GIT_URL
-        //许可证
+        // licenses
         licenses = [POM_LICENCE_NAME]
 //        labels = ['gradle', 'core']
         publicDownloadNumbers = true
-        //Github仓库相对地址
+        // relative address in github repository
         githubRepo = GITHUB_REPO
-        //版本历程文件
+        // version history file
         githubReleaseNotesFile = 'README.md' //Optional Github readme file
         version {
-            //版本号
+            // version number
             name = VERSION_CODE
-            //版本描述
+            // version description
             desc = POM_DESCRIPTION
 //            mavenCentralSync {
 //                sync = true
