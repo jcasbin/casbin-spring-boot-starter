@@ -1,4 +1,13 @@
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'io.github.gradle-nexus.publish-plugin'
+
+ext {
+    ossrhUsername = findProperty("ossrhUsername") ?: System.getenv("OSSRH_USERNAME")
+    ossrhPassword = findProperty("ossrhPassword") ?: System.getenv("OSSRH_PASSWORD")
+    signingKey = findProperty("signingKey") ?: System.getenv("SIGNING_KEY")
+    signingPassword = findProperty("signingPassword") ?: System.getenv("SIGNING_PASSWORD")
+}
 
 task sourceJar(type: Jar) {
     archiveClassifier = 'sources'
@@ -33,7 +42,7 @@ publishing {
             afterEvaluate {
                 groupId = GROUP
                 artifactId = ARTIFACT_ID
-                version = VERSION_CODE
+                version = project.version
             }
             // resolve the dynamic dependency version into the actual reference version, e.g., 1.2.+ -> 1.2.10
             versionMapping {
@@ -78,8 +87,22 @@ publishing {
     }
 }
 tasks.withType(GenerateMavenPom).all {
-    destination = "$buildDir/libs/${project.name}-${VERSION_CODE}.pom"
+    destination = "$buildDir/libs/${project.name}-${project.version}.pom"
 }
 build.dependsOn('sourceJar')
 build.dependsOn('javadocJar')
 build.dependsOn('generatePomFileForMavenJavaPublication')
+
+signing {
+    useInMemoryPgpKeys(signingKey, signingPassword ?: "")
+    sign publishing.publications.mavenJava
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            username = ossrhUsername
+            password = ossrhPassword
+        }
+    }
+}

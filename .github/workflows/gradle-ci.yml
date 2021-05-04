@@ -1,0 +1,56 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: build
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      #       mysql:
+      #         image: mysql:5.7
+      #         ports:
+      #           - 3306:3306
+      #         env:
+      #           MYSQL_ROOT_PASSWORD: casbin_test
+      #           MYSQL_DATABASE: casbin
+      #         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '8'
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
+          ./gradlew check
+          ./gradlew jacocoTestReport
+          bash <(curl -s https://codecov.io/bash)
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - name: semantic-release
+        run: |
+          npm install -g semantic-release @semantic-release/exec
+          semantic-release
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
