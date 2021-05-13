@@ -50,7 +50,7 @@ jobs:
           npm install -g semantic-release @semantic-release/exec
           semantic-release
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRH_TOKEN_USERNAME }}
           ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_TOKEN_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY_ASCII }}
