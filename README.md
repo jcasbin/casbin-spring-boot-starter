@@ -5,7 +5,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.casbin/casbin-spring-boot-starter.svg?style=flat-square&color=brightgreen)](https://maven-badges.herokuapp.com/maven-central/org.casbin/casbin-spring-boot-starter/)
 [![License](https://img.shields.io/github/license/jcasbin/casbin-spring-boot-starter.svg?style=flat-square&color=blue)](http://www.apache.org/licenses/LICENSE-2.0.txt)
 [![SpringBootVersion](https://img.shields.io/badge/SpringBoot-2.3.5-heightgreen.svg?style=flat-square)](https://spring.io/projects/spring-boot)
-[![JCasbinVersion](https://img.shields.io/badge/JCasbinVersion-1.6.1-heightgreen.svg?style=flat-square)](https://casbin.org)
+[![JCasbinVersion](https://img.shields.io/badge/JCasbinVersion-1.9.0-heightgreen.svg?style=flat-square)](https://casbin.org)
 
 [![](https://raw.githubusercontent.com/casbin/jcasbin/master/casbin-logo.png)](https://casbin.org)
 
