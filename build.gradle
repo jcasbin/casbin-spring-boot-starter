@@ -28,8 +28,8 @@ configurations {
 }
 
 dependencies {
-    api 'org.casbin:jcasbin:1.9.1'
-    api 'com.h2database:h2'
+    compile 'org.casbin:jcasbin:1.9.1'
+    compile 'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
