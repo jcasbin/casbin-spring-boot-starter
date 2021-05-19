@@ -28,7 +28,7 @@ configurations {
 }
 
 dependencies {
-    compile 'org.casbin:jcasbin:1.9.1'
+    compile 'org.casbin:jcasbin:1.9.2'
     compile 'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
