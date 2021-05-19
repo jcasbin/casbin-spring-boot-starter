@@ -28,12 +28,12 @@ configurations {
 }
 
 dependencies {
-    api('org.casbin:jcasbin:1.9.1')
-    api('com.h2database:h2')
-    implementation('org.springframework.boot:spring-boot-starter-jdbc')
+    api 'org.casbin:jcasbin:1.9.1'
+    api 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
-    compileOnly('org.springframework.boot:spring-boot-starter-data-redis')
-    testImplementation('org.springframework.boot:spring-boot-starter-data-redis')
-    testRuntimeOnly('mysql:mysql-connector-java:5.1.47')
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    testRuntimeOnly 'mysql:mysql-connector-java:5.1.47'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
