@@ -3,6 +3,7 @@ package org.casbin.spring.boot.autoconfigure;
 import org.casbin.adapter.DB2Adapter;
 import org.casbin.adapter.JdbcAdapter;
 import org.casbin.adapter.OracleAdapter;
+import org.casbin.adapter.PostgreSQLAdapter;
 import org.casbin.annotation.CasbinDataSource;
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.exception.CasbinModelConfigNotFoundException;
@@ -92,8 +93,9 @@ public class CasbinAutoConfiguration {
         switch (databaseName) {
             case "mysql":
             case "h2":
-            case "postgresql":
                 return new JdbcAdapter(jdbcTemplateToUse, exceptionProperties, autoCreateTable);
+            case "postgresql":
+                return new PostgreSQLAdapter(jdbcTemplateToUse, exceptionProperties, autoCreateTable);
             case "oracle":
                 return new OracleAdapter(jdbcTemplateToUse, exceptionProperties, autoCreateTable);
             case "db2":
