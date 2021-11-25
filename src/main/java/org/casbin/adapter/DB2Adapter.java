@@ -16,14 +16,15 @@ public class DB2Adapter extends JdbcAdapter {
     private final static String DROP_TABLE_SQL = "DROP TABLE CASBIN_RULE";
 
     private static final String INIT_TABLE_SQL = "CREATE TABLE CASBIN_RULE (" +
-            "  ID int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "+
+            "  ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) ,"+
             "  PTYPE VARCHAR(255) NOT NULL ," +
             "  V0 VARCHAR(255) DEFAULT NULL ," +
             "  V1 VARCHAR(255) DEFAULT NULL ," +
             "  V2 VARCHAR(255) DEFAULT NULL ," +
             "  V3 VARCHAR(255) DEFAULT NULL ," +
             "  V4 VARCHAR(255) DEFAULT NULL ," +
-            "  V5 VARCHAR(255) DEFAULT NULL" +
+            "  V5 VARCHAR(255) DEFAULT NULL ," +
+            "  PRIMARY KEY (ID) " +
             ")";
 
     /**
