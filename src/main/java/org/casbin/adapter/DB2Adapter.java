@@ -13,7 +13,7 @@ public class DB2Adapter extends JdbcAdapter {
 
     private static final String CHECK_TABLE_SQL = "select 1 from syscat.tables where tabname = upper('CASBIN_RULE')";
 
-    private final static String DROP_TABLE_SQL = "DROP TABLE CASBIN_RULE";
+    private static final  String DROP_TABLE_SQL = "DROP TABLE CASBIN_RULE";
 
     private static final String INIT_TABLE_SQL = "CREATE TABLE CASBIN_RULE (" +
             "  ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) ,"+
