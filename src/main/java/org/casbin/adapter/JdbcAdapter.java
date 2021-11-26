@@ -1,5 +1,13 @@
 package org.casbin.adapter;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.jcasbin.model.Model;
 import org.casbin.jcasbin.persist.FilteredAdapter;
@@ -10,11 +18,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import org.stringtemplate.v4.ST;
 
 /**
  * @author shy
@@ -26,9 +30,13 @@ import java.util.stream.Collectors;
  */
 public class JdbcAdapter implements FilteredAdapter {
 
-    private final static Logger logger = LoggerFactory.getLogger(JdbcAdapter.class);
+    private static final Logger logger = LoggerFactory.getLogger(JdbcAdapter.class);
+    
+    public static final String DEFAULT_TABLE_NAME = "casbin_rule";
+	
+	private String tableName;
 
-    private final static String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS casbin_rule (" +
+    private static final String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS <casbin_rule> (" +
             "    id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "+
             "    ptype varchar(255) NOT NULL," +
             "    v0    varchar(255) DEFAULT NULL," +
@@ -38,11 +46,11 @@ public class JdbcAdapter implements FilteredAdapter {
             "    v4    varchar(255) DEFAULT NULL," +
             "    v5    varchar(255) DEFAULT NULL" +
             ")";
-    private final static String DROP_TABLE_SQL = "DROP TABLE IF EXISTS casbin_rule";
-    private final static String DELETE_TABLE_CONTENT_SQL = "DELETE FROM casbin_rule";
-    private final static String LOAD_POLICY_SQL = "SELECT * FROM casbin_rule";
-    private final static String INSERT_POLICY_SQL = "INSERT INTO casbin_rule(ptype, v0, v1, v2, v3, v4, v5) VALUES(?, ?, ?, ?, ?, ?, ?)";
-    private final static String DELETE_POLICY_SQL = "DELETE FROM casbin_rule WHERE ptype = ? ";
+    private static final String DROP_TABLE_SQL = "DROP TABLE IF EXISTS <casbin_rule>";
+    private static final String DELETE_TABLE_CONTENT_SQL = "DELETE FROM <casbin_rule>";
+    private static final String LOAD_POLICY_SQL = "SELECT * FROM <casbin_rule>";
+    private static final String INSERT_POLICY_SQL = "INSERT INTO <casbin_rule>(ptype, v0, v1, v2, v3, v4, v5) VALUES(?, ?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_POLICY_SQL = "DELETE FROM <casbin_rule> WHERE ptype = ? ";
 
     protected JdbcTemplate jdbcTemplate;
     protected CasbinExceptionProperties casbinExceptionProperties;
@@ -50,7 +58,12 @@ public class JdbcAdapter implements FilteredAdapter {
     private volatile boolean isFiltered = true;
 
     public JdbcAdapter(JdbcTemplate jdbcTemplate, CasbinExceptionProperties casbinExceptionProperties, boolean autoCreateTable) {
+    	this(jdbcTemplate,casbinExceptionProperties,DEFAULT_TABLE_NAME,autoCreateTable);
+    }
+    
+    public JdbcAdapter(JdbcTemplate jdbcTemplate, CasbinExceptionProperties casbinExceptionProperties, String tableName, boolean autoCreateTable) {
         this.jdbcTemplate = jdbcTemplate;
+        this.tableName = tableName;
         this.casbinExceptionProperties = casbinExceptionProperties;
         if (autoCreateTable) {
             initTable();
@@ -65,24 +78,37 @@ public class JdbcAdapter implements FilteredAdapter {
         public String[] p;
         public String[] g;
     }
-
-
+    
+    protected String renderActualSql(String sqlTemplate) {
+    	ST policy = new ST(sqlTemplate);
+    	policy.add(DEFAULT_TABLE_NAME, tableName);
+    	return policy.render();
+    }
+ 
     protected String getInitTableSql() {
-        return INIT_TABLE_SQL;
+        return renderActualSql(INIT_TABLE_SQL);
     }
 
     protected String getDropTableSql() {
-        return DROP_TABLE_SQL;
+        return renderActualSql(DROP_TABLE_SQL);
     }
 
     protected String getLoadPolicySql() {
-        return LOAD_POLICY_SQL;
+        return renderActualSql(LOAD_POLICY_SQL);
     }
 
     protected String getDeleteTableContentSql() {
-        return DELETE_TABLE_CONTENT_SQL;
+        return renderActualSql(DELETE_TABLE_CONTENT_SQL);
     }
-
+    
+    protected String getInsertPolicySql() {
+    	return renderActualSql(INSERT_POLICY_SQL);
+    }
+    
+    protected String getDeletePolicySql() {
+    	return renderActualSql(DELETE_POLICY_SQL);
+    }
+ 
     /**
      * Initialize the table structure
      */
@@ -145,7 +171,7 @@ public class JdbcAdapter implements FilteredAdapter {
         deleteTableContent();
         List<CasbinRule> casbinRules = CasbinRule.transformToCasbinRule(model);
         int[] rows = jdbcTemplate.batchUpdate(
-                INSERT_POLICY_SQL,
+        		getInsertPolicySql(),
                 new BatchPreparedStatementSetter() {
 
                     @Override
@@ -190,7 +216,7 @@ public class JdbcAdapter implements FilteredAdapter {
         for (int i = 0; i < 6 - rule.size(); i++) {
             rules.add(null);
         }
-        int rows = jdbcTemplate.update(INSERT_POLICY_SQL, rules.toArray());
+        int rows = jdbcTemplate.update(getInsertPolicySql(), rules.toArray());
         if (rows != 1) {
             throw new CasbinAdapterException(String.format("Add policy error, add %d rows, expect %d rows", rows, 1));
         }
@@ -229,7 +255,7 @@ public class JdbcAdapter implements FilteredAdapter {
         }
         List<String> params = new ArrayList<>(Arrays.asList(fieldValues));
         params.add(0, ptype);
-        String delSql = DELETE_POLICY_SQL;
+        String delSql = getDeletePolicySql();
         int columnIndex = fieldIndex;
         for (int i = 0; i < fieldValues.length; i++) {
             delSql = String.format("%s%s%s%s", delSql, " AND v", columnIndex, " = ? ");

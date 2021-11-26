@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class PostgreSQLAdapter extends JdbcAdapter {
 
-    private final static String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS CASBIN_RULE (" +
+    private static final String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS casbin_rule (" +
             " id SERIAL PRIMARY KEY, "+
             " ptype varchar(255) NOT NULL," +
             " v0 varchar(255) DEFAULT NULL," +
@@ -27,9 +27,13 @@ public class PostgreSQLAdapter extends JdbcAdapter {
     public PostgreSQLAdapter(JdbcTemplate jdbcTemplate, CasbinExceptionProperties casbinExceptionProperties, boolean autoCreateTable) {
         super(jdbcTemplate, casbinExceptionProperties, autoCreateTable);
     }
+    
+    public PostgreSQLAdapter(JdbcTemplate jdbcTemplate, CasbinExceptionProperties casbinExceptionProperties, String tableName, boolean autoCreateTable) {
+        super(jdbcTemplate, casbinExceptionProperties, tableName, autoCreateTable);
+    }
 
     @Override
     protected String getInitTableSql() {
-        return INIT_TABLE_SQL;
+        return renderActualSql(INIT_TABLE_SQL);
     }
 }

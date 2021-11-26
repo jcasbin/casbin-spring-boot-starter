@@ -61,6 +61,8 @@ casbin:
   #The jdbc adapter will actively look for the data source information you configured in spring.datasource
   #Default use jdbc, and use the built-in h2 database for memory storage
   storeType: jdbc
+  #Customized policy table name when use jdbc, casbin_rule as default.
+  tableName: casbin_rule
   #Data source initialization policy [create (automatically create data table, no longer initialized if created), never (always do not initialize)]
   initializeSchema: create
   #Local model configuration file address, the default reading location: classpath: casbin/model.conf

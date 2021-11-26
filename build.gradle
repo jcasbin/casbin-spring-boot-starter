@@ -31,6 +31,7 @@ dependencies {
     compile 'org.casbin:jcasbin:1.9.2'
     compile 'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.antlr:stringtemplate:4.0.2'
 
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
