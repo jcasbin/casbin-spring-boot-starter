@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class OracleAdapter extends JdbcAdapter {
 
-    private static final String INIT_TABLE_SQL = "CREATE TABLE <casbin_rule> (" +
+    private static final String INIT_TABLE_SQL = "CREATE TABLE casbin_rule (" +
             "  ID int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "+
             "  PTYPE VARCHAR2(255) NOT NULL ," +
             "  V0 VARCHAR2(255) DEFAULT NULL ," +
@@ -23,8 +23,8 @@ public class OracleAdapter extends JdbcAdapter {
             "  V4 VARCHAR2(255) DEFAULT NULL ," +
             "  V5 VARCHAR2(255) DEFAULT NULL" +
             ")";
-    private static final String DROP_TABLE_SQL = "DROP TABLE <casbin_rule>";
-    private static final String CHECK_TABLE_EXIST = "SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = UPPER('<casbin_rule>')";
+    private static final String DROP_TABLE_SQL = "DROP TABLE casbin_rule";
+    private static final String CHECK_TABLE_EXIST = "SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = UPPER('casbin_rule')";
 
     public OracleAdapter(JdbcTemplate jdbcTemplate, CasbinExceptionProperties casbinExceptionProperties, boolean autoCreateTable) {
         super(jdbcTemplate, casbinExceptionProperties, autoCreateTable);

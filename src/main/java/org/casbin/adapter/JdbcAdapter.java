@@ -18,7 +18,6 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import org.stringtemplate.v4.ST;
 
 /**
  * @author shy
@@ -36,7 +35,7 @@ public class JdbcAdapter implements FilteredAdapter {
 	
 	private String tableName;
 
-    private static final String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS <casbin_rule> (" +
+    private static final String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS casbin_rule (" +
             "    id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "+
             "    ptype varchar(255) NOT NULL," +
             "    v0    varchar(255) DEFAULT NULL," +
@@ -46,11 +45,11 @@ public class JdbcAdapter implements FilteredAdapter {
             "    v4    varchar(255) DEFAULT NULL," +
             "    v5    varchar(255) DEFAULT NULL" +
             ")";
-    private static final String DROP_TABLE_SQL = "DROP TABLE IF EXISTS <casbin_rule>";
-    private static final String DELETE_TABLE_CONTENT_SQL = "DELETE FROM <casbin_rule>";
-    private static final String LOAD_POLICY_SQL = "SELECT * FROM <casbin_rule>";
-    private static final String INSERT_POLICY_SQL = "INSERT INTO <casbin_rule>(ptype, v0, v1, v2, v3, v4, v5) VALUES(?, ?, ?, ?, ?, ?, ?)";
-    private static final String DELETE_POLICY_SQL = "DELETE FROM <casbin_rule> WHERE ptype = ? ";
+    private static final String DROP_TABLE_SQL = "DROP TABLE IF EXISTS casbin_rule";
+    private static final String DELETE_TABLE_CONTENT_SQL = "DELETE FROM casbin_rule";
+    private static final String LOAD_POLICY_SQL = "SELECT * FROM casbin_rule";
+    private static final String INSERT_POLICY_SQL = "INSERT INTO casbin_rule(ptype, v0, v1, v2, v3, v4, v5) VALUES(?, ?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_POLICY_SQL = "DELETE FROM casbin_rule WHERE ptype = ? ";
 
     protected JdbcTemplate jdbcTemplate;
     protected CasbinExceptionProperties casbinExceptionProperties;
@@ -79,10 +78,8 @@ public class JdbcAdapter implements FilteredAdapter {
         public String[] g;
     }
     
-    protected String renderActualSql(String sqlTemplate) {
-    	ST policy = new ST(sqlTemplate);
-    	policy.add(DEFAULT_TABLE_NAME, tableName);
-    	return policy.render();
+    protected String renderActualSql(String sql) {
+    	return sql.replace(DEFAULT_TABLE_NAME, tableName);
     }
  
     protected String getInitTableSql() {
