@@ -60,6 +60,8 @@ casbin:
   #jdbc适配器将主动寻找您在spring.datasource配置的数据源信息
   #默认使用jdbc,并使用内置h2数据库进行内存存储
   storeType: jdbc
+  #当使用jdbc时,定制化数据库表名,默认表名是casbin_rule
+  tableName: casbin_rule
   #数据源初始化策略[create(自动创建数据表,如已创建则不再进行初始化),never(始终不进行初始化)]
   initializeSchema: create
   #本地模型配置文件地址,约定默认读取位置:classpath:casbin/model.conf
