@@ -52,7 +52,7 @@ import java.sql.DatabaseMetaData;
 @ConditionalOnExpression("${casbin.enableCasbin:true}")
 public class CasbinAutoConfiguration {
 
-    private final static Logger logger = LoggerFactory.getLogger(CasbinAutoConfiguration.class);
+    private static final Logger logger = LoggerFactory.getLogger(CasbinAutoConfiguration.class);
 
     /**
      * Automatic configuration file storage adapter
@@ -89,17 +89,18 @@ public class CasbinAutoConfiguration {
         String databaseName = getDatabaseName(jdbcTemplateToUse.getDataSource());
         CasbinDataSourceInitializationMode initializeSchema = properties.getInitializeSchema();
         boolean autoCreateTable = initializeSchema == CasbinDataSourceInitializationMode.CREATE;
+        String tableName = properties.getTableName();
         logger.info("Casbin current use database product: {}", databaseName);
         switch (databaseName) {
             case "mysql":
             case "h2":
-                return new JdbcAdapter(jdbcTemplateToUse, exceptionProperties, autoCreateTable);
+                return new JdbcAdapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
             case "postgresql":
-                return new PostgreSQLAdapter(jdbcTemplateToUse, exceptionProperties, autoCreateTable);
+                return new PostgreSQLAdapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
             case "oracle":
-                return new OracleAdapter(jdbcTemplateToUse, exceptionProperties, autoCreateTable);
+                return new OracleAdapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
             case "db2":
-                return new DB2Adapter(jdbcTemplateToUse, exceptionProperties, autoCreateTable);
+                return new DB2Adapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
             default:
                 throw new CasbinAdapterException("Can't find " + databaseName + " jdbc adapter");
         }

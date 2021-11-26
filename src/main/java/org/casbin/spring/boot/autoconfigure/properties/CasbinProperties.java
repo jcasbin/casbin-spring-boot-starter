@@ -17,6 +17,10 @@ import java.io.InputStream;
  */
 @ConfigurationProperties("casbin")
 public class CasbinProperties {
+	/**
+	 * Default table name when storage strategy is JDBC
+	 */
+	private String tableName = "casbin_rule";
     /**
      * Enable Casbin
      */
@@ -157,5 +161,13 @@ public class CasbinProperties {
     public void setUseDefaultModelIfModelNotSetting(boolean useDefaultModelIfModelNotSetting) {
         this.useDefaultModelIfModelNotSetting = useDefaultModelIfModelNotSetting;
     }
+
+	public String getTableName() {
+		return tableName;
+	}
+
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
 }
 
