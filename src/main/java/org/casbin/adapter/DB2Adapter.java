@@ -11,11 +11,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class DB2Adapter extends JdbcAdapter {
 
-    private static final String CHECK_TABLE_SQL = "select 1 from syscat.tables where tabname = upper('casbin_rule')";
+    private static final String CHECK_TABLE_SQL = "select 1 from syscat.tables where tabname = upper('<casbin_rule>')";
 
-    private static final String DROP_TABLE_SQL = "DROP TABLE casbin_rule";
+    private static final String DROP_TABLE_SQL = "DROP TABLE <casbin_rule>";
 
-    private static final String INIT_TABLE_SQL = "CREATE TABLE casbin_rule (" +
+    private static final String INIT_TABLE_SQL = "CREATE TABLE <casbin_rule> (" +
             "  ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) ,"+
             "  PTYPE VARCHAR(255) NOT NULL ," +
             "  V0 VARCHAR(255) DEFAULT NULL ," +
