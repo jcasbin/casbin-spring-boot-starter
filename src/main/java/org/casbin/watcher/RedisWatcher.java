@@ -1,7 +1,6 @@
 package org.casbin.watcher;
 
 import org.casbin.jcasbin.persist.Watcher;
-import org.casbin.spring.boot.autoconfigure.CasbinRedisWatcherAutoConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -17,14 +16,17 @@ import java.util.UUID;
  * @date 2019-4-06 1:58
  */
 public class RedisWatcher implements Watcher {
+
     private Runnable updateCallback;
+    private final String policyTopic;
     private final StringRedisTemplate stringRedisTemplate;
     private final static String REDIS_WATCHER_UUID = UUID.randomUUID().toString();
     private final static Logger logger = LoggerFactory.getLogger(RedisWatcher.class);
 
-    public RedisWatcher(StringRedisTemplate stringRedisTemplate) {
+    public RedisWatcher(StringRedisTemplate stringRedisTemplate, String policyTopic) {
+        this.policyTopic = policyTopic;
         this.stringRedisTemplate = stringRedisTemplate;
-        logger.info("Current casbin redis watcher uuid: {}", REDIS_WATCHER_UUID);
+        logger.info("Current casbin redis watcher uuid: {}, subscribe topic: {}", REDIS_WATCHER_UUID, this.policyTopic);
     }
 
     @Override
@@ -35,7 +37,7 @@ public class RedisWatcher implements Watcher {
     @Override
     public void update() {
         stringRedisTemplate.convertAndSend(
-                CasbinRedisWatcherAutoConfiguration.CASBIN_POLICY_TOPIC,
+                this.policyTopic,
                 "Casbin policy has a new version from redis watcher: " + REDIS_WATCHER_UUID
         );
     }

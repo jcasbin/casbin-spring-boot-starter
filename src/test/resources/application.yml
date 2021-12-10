@@ -27,6 +27,9 @@ casbin:
   # and only Redis is supported for the time being
   # After opening Watcher, you need to manually add spring-boot-starter-data-redis dependency
   watcherType: redis
+  # Add your Customer Topic here or it will go with 'CASBIN_POLICY_TOPIC' by default
+  policyTopic: YOUR_CUSTOMER_TOPIC
+
 spring:
   # Although the data source is configured here, the custom data source is switched to H2 when the unit test is tested.
   datasource:
