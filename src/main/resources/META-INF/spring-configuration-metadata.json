@@ -83,6 +83,13 @@
       "defaultValue": "redis"
     },
     {
+      "name": "casbin.policyTopic",
+      "type": "java.lang.String",
+      "description": "Redis topic for Watcher",
+      "sourceType": "org.casbin.spring.boot.autoconfigure.properties.CasbinProperties",
+      "defaultValue": "CASBIN_POLICY_TOPIC"
+    },
+    {
       "name": "casbin.exception.removePolicyFailed",
       "type": "java.lang.Boolean",
       "description": "Throws an exception when the delete policy fails",

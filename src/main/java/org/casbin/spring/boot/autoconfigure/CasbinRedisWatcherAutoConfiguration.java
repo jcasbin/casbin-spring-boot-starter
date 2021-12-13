@@ -37,14 +37,13 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 public class CasbinRedisWatcherAutoConfiguration {
 
     private final static Logger logger = LoggerFactory.getLogger(CasbinRedisWatcherAutoConfiguration.class);
-    public final static String CASBIN_POLICY_TOPIC = "CASBIN_POLICY_TOPIC";
 
     @Bean
     @ConditionalOnBean(RedisTemplate.class)
     @ConditionalOnMissingBean
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public Watcher redisWatcher(StringRedisTemplate stringRedisTemplate, Enforcer enforcer) {
-        RedisWatcher watcher = new RedisWatcher(stringRedisTemplate);
+    public Watcher redisWatcher(StringRedisTemplate stringRedisTemplate, Enforcer enforcer, CasbinProperties casbinProperties) {
+        RedisWatcher watcher = new RedisWatcher(stringRedisTemplate, casbinProperties.getPolicyTopic());
         enforcer.setWatcher(watcher);
         logger.info("Casbin set watcher: {}", watcher.getClass().getName());
         return watcher;
@@ -71,12 +70,13 @@ public class CasbinRedisWatcherAutoConfiguration {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public RedisMessageListenerContainer redisMessageListenerContainer(
             RedisConnectionFactory connectionFactory,
-            MessageListenerAdapter listenerAdapter
+            MessageListenerAdapter listenerAdapter,
+            CasbinProperties casbinProperties
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         // subscribe to the CASBIN_POLICY_TOPIC channel
-        container.addMessageListener(listenerAdapter, new ChannelTopic(CASBIN_POLICY_TOPIC));
+        container.addMessageListener(listenerAdapter, new ChannelTopic(casbinProperties.getPolicyTopic()));
         return container;
     }
 }

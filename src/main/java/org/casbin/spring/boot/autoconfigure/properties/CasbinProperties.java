@@ -46,6 +46,10 @@ public class CasbinProperties {
      */
     private CasbinWatcherType watcherType = CasbinWatcherType.REDIS;
     /**
+     * Redis topic for Watcher
+     */
+    private String policyTopic = "CASBIN_POLICY_TOPIC";
+    /**
      * Data table initialization strategy
      */
     private CasbinDataSourceInitializationMode initializeSchema = CasbinDataSourceInitializationMode.CREATE;
@@ -169,5 +173,13 @@ public class CasbinProperties {
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
+
+    public String getPolicyTopic() {
+        return policyTopic;
+    }
+
+    public void setPolicyTopic(String policyTopic) {
+        this.policyTopic = policyTopic;
+    }
 }
 
