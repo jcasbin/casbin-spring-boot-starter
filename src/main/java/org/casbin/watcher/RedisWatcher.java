@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * @author fangzhengjin
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class RedisWatcher implements Watcher {
 
     private Runnable updateCallback;
+    private Consumer<String> consumer;
     private final String policyTopic;
     private final StringRedisTemplate stringRedisTemplate;
     private final static String REDIS_WATCHER_UUID = UUID.randomUUID().toString();
@@ -32,6 +34,11 @@ public class RedisWatcher implements Watcher {
     @Override
     public void setUpdateCallback(Runnable runnable) {
         updateCallback = runnable;
+    }
+
+    @Override
+    public void setUpdateCallback(Consumer<String> func) {
+        this.consumer = func;
     }
 
     @Override
@@ -51,6 +58,9 @@ public class RedisWatcher implements Watcher {
         }
 
         updateCallback.run();
+        if (consumer != null) {
+            consumer.accept(message);
+        }
         logger.info("Casbin policy updated.");
     }
 }

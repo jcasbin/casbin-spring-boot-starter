@@ -54,7 +54,7 @@ public class JdbcAdapter implements FilteredAdapter {
     protected JdbcTemplate jdbcTemplate;
     protected CasbinExceptionProperties casbinExceptionProperties;
 
-    private volatile boolean isFiltered = true;
+    private volatile boolean isFiltered = false;
 
     public JdbcAdapter(JdbcTemplate jdbcTemplate, CasbinExceptionProperties casbinExceptionProperties, boolean autoCreateTable) {
     	this(jdbcTemplate,casbinExceptionProperties,DEFAULT_TABLE_NAME,autoCreateTable);
@@ -154,7 +154,6 @@ public class JdbcAdapter implements FilteredAdapter {
         policies.keySet().forEach(
                 k -> model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k))
         );
-        isFiltered = false;
     }
 
     /**
@@ -280,9 +279,11 @@ public class JdbcAdapter implements FilteredAdapter {
     public void loadFilteredPolicy(Model model, Object filter) throws CasbinAdapterException {
         if (filter == null) {
             loadPolicy(model);
+            isFiltered = false;
             return;
         }
         if (!(filter instanceof Filter)) {
+            isFiltered = false;
             throw new CasbinAdapterException("Invalid filter type.");
         }
         try {
@@ -328,7 +329,6 @@ public class JdbcAdapter implements FilteredAdapter {
         policies.keySet().forEach(
                 k -> model.model.get(k.substring(0, 1)).get(k).policy.addAll(policies.get(k))
         );
-        isFiltered = false;
     }
 
     /**
