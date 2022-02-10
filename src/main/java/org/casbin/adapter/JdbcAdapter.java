@@ -36,7 +36,7 @@ public class JdbcAdapter implements FilteredAdapter {
 	private String tableName;
 
     private static final String INIT_TABLE_SQL = "CREATE TABLE IF NOT EXISTS casbin_rule (" +
-            "    id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "+
+            "    id    int          NOT NULL AUTO_INCREMENT PRIMARY KEY, "+
             "    ptype varchar(255) NOT NULL," +
             "    v0    varchar(255) DEFAULT NULL," +
             "    v1    varchar(255) DEFAULT NULL," +
