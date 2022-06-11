@@ -1,9 +1,7 @@
 package org.casbin.spring.boot.autoconfigure;
 
-import org.casbin.adapter.DB2Adapter;
-import org.casbin.adapter.JdbcAdapter;
-import org.casbin.adapter.OracleAdapter;
-import org.casbin.adapter.PostgreSQLAdapter;
+import jdk.nashorn.internal.scripts.JD;
+import org.casbin.adapter.*;
 import org.casbin.annotation.CasbinDataSource;
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.exception.CasbinModelConfigNotFoundException;
@@ -15,6 +13,8 @@ import org.casbin.jcasbin.persist.file_adapter.FileAdapter;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinDataSourceInitializationMode;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinExceptionProperties;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinProperties;
+import org.h2.jdbc.JdbcSQLException;
+import org.h2.jdbc.JdbcSQLNonTransientConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DatabaseDriver;
@@ -35,7 +36,9 @@ import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.io.InputStream;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.DatabaseMetaData;
+import java.sql.SQLDataException;
 
 /**
  * @author fangzhengjin
@@ -47,7 +50,7 @@ import java.sql.DatabaseMetaData;
  */
 
 @Configuration
-@EnableConfigurationProperties({CasbinProperties.class, CasbinExceptionProperties.class})
+@EnableConfigurationProperties({CasbinProperties.class, CasbinExceptionProperties.class, DataSourceProperties.class})
 @AutoConfigureAfter({JdbcTemplateAutoConfiguration.class})
 @ConditionalOnExpression("${casbin.enableCasbin:true}")
 public class CasbinAutoConfiguration {
@@ -83,7 +86,8 @@ public class CasbinAutoConfiguration {
             @CasbinDataSource ObjectProvider<DataSource> casbinDataSource,
             JdbcTemplate jdbcTemplate,
             CasbinProperties properties,
-            CasbinExceptionProperties exceptionProperties
+            CasbinExceptionProperties exceptionProperties,
+            DataSourceProperties dataSourceProperties
     ) {
         JdbcTemplate jdbcTemplateToUse = getJdbcTemplate(jdbcTemplate, casbinDataSource);
         String databaseName = getDatabaseName(jdbcTemplateToUse.getDataSource());
@@ -91,18 +95,13 @@ public class CasbinAutoConfiguration {
         boolean autoCreateTable = initializeSchema == CasbinDataSourceInitializationMode.CREATE;
         String tableName = properties.getTableName();
         logger.info("Casbin current use database product: {}", databaseName);
-        switch (databaseName) {
-            case "mysql":
-            case "h2":
-                return new JdbcAdapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
-            case "postgresql":
-                return new PostgreSQLAdapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
-            case "oracle":
-                return new OracleAdapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
-            case "db2":
-                return new DB2Adapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
-            default:
-                throw new CasbinAdapterException("Can't find " + databaseName + " jdbc adapter");
+        try {
+            return new JDBCAdapter(dataSourceProperties.getDriverClassName(), dataSourceProperties.getUrl(),
+                    dataSourceProperties.getUsername(), dataSourceProperties.getPassword(),
+                    exceptionProperties.isRemovePolicyFailed(), tableName, autoCreateTable);
+        } catch (Exception e) {
+            logger.error("can't create JDBCAdapter: {}" ,String.valueOf(e));
+            throw new RuntimeException("can't create JDBCAdapter");
         }
     }
 
