@@ -4,6 +4,7 @@ import org.casbin.exception.CasbinAdapterException;
 import org.casbin.jcasbin.model.Model;
 import org.casbin.jcasbin.persist.Adapter;
 import org.casbin.jcasbin.persist.FilteredAdapter;
+import org.casbin.jcasbin.persist.file_adapter.FilteredAdapter.Filter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +42,8 @@ public class JdbcAdapterTest {
      */
     @Test
     public void testLoadFilteredPolicy() {
-        JdbcAdapter.Filter filter = new JdbcAdapter.Filter();
+        Filter filter = new Filter();
+
         List<String> rules;
 
         init();

@@ -35,4 +35,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
     testRuntimeOnly 'mysql:mysql-connector-java:5.1.47'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation 'org.casbin:jcasbin-redis-watcher:1.4.0'
+    implementation 'org.casbin:jdbc-adapter:2.3.0'
 }
