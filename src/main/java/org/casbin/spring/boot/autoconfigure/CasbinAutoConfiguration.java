@@ -99,10 +99,10 @@ public class CasbinAutoConfiguration {
             return new JDBCAdapter(dataSourceProperties.getDriverClassName(), dataSourceProperties.getUrl(),
                     dataSourceProperties.getUsername(), dataSourceProperties.getPassword(),
                     exceptionProperties.isRemovePolicyFailed(), tableName, autoCreateTable);
-        } catch (Exception e) {
-            logger.error("can't create JDBCAdapter: {}" ,String.valueOf(e));
-            throw new RuntimeException("can't create JDBCAdapter");
+        } catch (Exception ignored) {
         }
+
+        throw new CasbinAdapterException("Can't create JDBCAdapter, because some properties are not right");
     }
 
     /**

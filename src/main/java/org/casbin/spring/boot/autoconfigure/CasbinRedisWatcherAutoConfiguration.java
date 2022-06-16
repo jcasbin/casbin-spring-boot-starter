@@ -44,10 +44,7 @@ public class CasbinRedisWatcherAutoConfiguration {
     @ConditionalOnMissingBean
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public Watcher redisWatcher(RedisProperties redisProperties, Enforcer enforcer) {
-        int timeout = 2000;
-        if (redisProperties.getTimeout() != null) {
-            timeout = (int) redisProperties.getTimeout().toMillis();
-        }
+        int timeout = redisProperties.getTimeout() != null ? (int) redisProperties.getTimeout().toMillis() : 2000;
         RedisWatcher watcher = new RedisWatcher(redisProperties.getHost(), redisProperties.getPort(), redisProperties.getClientName(),
                 timeout, redisProperties.getPassword());
         enforcer.setWatcher(watcher);
