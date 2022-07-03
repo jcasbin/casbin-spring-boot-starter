@@ -1,9 +1,6 @@
 package org.casbin.spring.boot.autoconfigure;
 
-import org.casbin.adapter.DB2Adapter;
-import org.casbin.adapter.JdbcAdapter;
-import org.casbin.adapter.OracleAdapter;
-import org.casbin.adapter.PostgreSQLAdapter;
+import org.casbin.adapter.JDBCAdapter;
 import org.casbin.annotation.CasbinDataSource;
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.exception.CasbinModelConfigNotFoundException;
@@ -23,6 +20,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DatabaseDriver;
@@ -47,7 +45,7 @@ import java.sql.DatabaseMetaData;
  */
 
 @Configuration
-@EnableConfigurationProperties({CasbinProperties.class, CasbinExceptionProperties.class})
+@EnableConfigurationProperties({CasbinProperties.class, CasbinExceptionProperties.class, DataSourceProperties.class})
 @AutoConfigureAfter({JdbcTemplateAutoConfiguration.class})
 @ConditionalOnExpression("${casbin.enableCasbin:true}")
 public class CasbinAutoConfiguration {
@@ -78,32 +76,23 @@ public class CasbinAutoConfiguration {
     @ConditionalOnProperty(name = "casbin.storeType", havingValue = "jdbc", matchIfMissing = true)
     @ConditionalOnBean(JdbcTemplate.class)
     @ConditionalOnMissingBean
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public Adapter autoConfigJdbcAdapter(
             @CasbinDataSource ObjectProvider<DataSource> casbinDataSource,
             JdbcTemplate jdbcTemplate,
             CasbinProperties properties,
-            CasbinExceptionProperties exceptionProperties
-    ) {
+            CasbinExceptionProperties exceptionProperties,
+            DataSourceProperties dataSourceProperties
+    ) throws Exception {
         JdbcTemplate jdbcTemplateToUse = getJdbcTemplate(jdbcTemplate, casbinDataSource);
         String databaseName = getDatabaseName(jdbcTemplateToUse.getDataSource());
         CasbinDataSourceInitializationMode initializeSchema = properties.getInitializeSchema();
         boolean autoCreateTable = initializeSchema == CasbinDataSourceInitializationMode.CREATE;
         String tableName = properties.getTableName();
         logger.info("Casbin current use database product: {}", databaseName);
-        switch (databaseName) {
-            case "mysql":
-            case "h2":
-                return new JdbcAdapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
-            case "postgresql":
-                return new PostgreSQLAdapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
-            case "oracle":
-                return new OracleAdapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
-            case "db2":
-                return new DB2Adapter(jdbcTemplateToUse, exceptionProperties, tableName, autoCreateTable);
-            default:
-                throw new CasbinAdapterException("Can't find " + databaseName + " jdbc adapter");
-        }
+        return new JDBCAdapter(dataSourceProperties.getDriverClassName(), dataSourceProperties.getUrl(),
+                dataSourceProperties.getUsername(), dataSourceProperties.getPassword(),
+                exceptionProperties.isRemovePolicyFailed(), tableName, autoCreateTable);
+
     }
 
     /**
@@ -111,7 +100,6 @@ public class CasbinAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public Enforcer enforcer(CasbinProperties properties, Adapter adapter) {
         Model model = new Model();
         try {
@@ -122,7 +110,7 @@ public class CasbinAutoConfiguration {
             if (!properties.isUseDefaultModelIfModelNotSetting()) {
                 throw e;
             }
-            logger.info("Con't found model config file, use default model config");
+            logger.info("Can't found model config file, use default model config");
             // request definition
             model.addDef("r", "r", "sub, obj, act");
             // policy definition

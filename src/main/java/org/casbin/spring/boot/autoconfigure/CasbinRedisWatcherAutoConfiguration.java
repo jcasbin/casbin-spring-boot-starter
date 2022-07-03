@@ -11,15 +11,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 /**
  * @author fangzhengjin
@@ -31,7 +27,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
  */
 
 @Configuration
-@EnableConfigurationProperties(CasbinProperties.class)
+@EnableConfigurationProperties({CasbinProperties.class, RedisProperties.class})
 @AutoConfigureAfter({RedisAutoConfiguration.class, CasbinAutoConfiguration.class})
 @ConditionalOnExpression("'jdbc'.equalsIgnoreCase('${casbin.storeType:jdbc}') && ${casbin.enableWatcher:false} && 'redis'.equalsIgnoreCase('${casbin.watcherType:redis}') ")
 public class CasbinRedisWatcherAutoConfiguration {
@@ -41,42 +37,11 @@ public class CasbinRedisWatcherAutoConfiguration {
     @Bean
     @ConditionalOnBean(RedisTemplate.class)
     @ConditionalOnMissingBean
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public Watcher redisWatcher(StringRedisTemplate stringRedisTemplate, Enforcer enforcer, CasbinProperties casbinProperties) {
-        RedisWatcher watcher = new RedisWatcher(stringRedisTemplate, casbinProperties.getPolicyTopic());
+    public Watcher redisWatcher(RedisProperties redisProperties, Enforcer enforcer) {
+        int timeout = redisProperties.getTimeout() != null ? (int) redisProperties.getTimeout().toMillis() : 2000;
+        RedisWatcher watcher = new RedisWatcher(redisProperties.getHost(), redisProperties.getPort(), redisProperties.getClientName(), timeout, redisProperties.getPassword());
         enforcer.setWatcher(watcher);
         logger.info("Casbin set watcher: {}", watcher.getClass().getName());
         return watcher;
-    }
-
-    /**
-     * Message listener adapter, bind message processor,
-     * use reflection technology to call the business method of message processor
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public MessageListenerAdapter messageListenerAdapter(Watcher receiver) {
-        return new MessageListenerAdapter(receiver, "updatePolicy");
-    }
-
-    /**
-     * Redis message listener container
-     * You can add multiple redis listeners that monitor different topics.
-     * You only need to bind the message listener to the corresponding message subscription processor.
-     * The message listener use reflection technology to call the relevant methods of the message subscription processor to perform some business processing
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public RedisMessageListenerContainer redisMessageListenerContainer(
-            RedisConnectionFactory connectionFactory,
-            MessageListenerAdapter listenerAdapter,
-            CasbinProperties casbinProperties
-    ) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        // subscribe to the CASBIN_POLICY_TOPIC channel
-        container.addMessageListener(listenerAdapter, new ChannelTopic(casbinProperties.getPolicyTopic()));
-        return container;
     }
 }
