@@ -89,7 +89,7 @@ public class CasbinAutoConfiguration {
         boolean autoCreateTable = initializeSchema == CasbinDataSourceInitializationMode.CREATE;
         String tableName = properties.getTableName();
         logger.info("Casbin current use database product: {}", databaseName);
-        return new JDBCAdapter(dataSourceProperties.getDriverClassName(), dataSourceProperties.getUrl(),
+        return new JDBCAdapter(dataSourceProperties.determineDriverClassName(), dataSourceProperties.getUrl(),
                 dataSourceProperties.getUsername(), dataSourceProperties.getPassword(),
                 exceptionProperties.isRemovePolicyFailed(), tableName, autoCreateTable);
 
