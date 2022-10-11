@@ -28,7 +28,7 @@ configurations {
 
 dependencies {
     compileOnly 'org.casbin:jcasbin:1.21.0'
-    compileOnly 'com.h2database:h2:2.1.210'
+    runtimeOnly 'com.h2database:h2:2.1.210'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
