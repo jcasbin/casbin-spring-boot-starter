@@ -4,11 +4,10 @@ import org.casbin.jcasbin.exception.CasbinAdapterException;
 import org.casbin.jcasbin.model.Model;
 import org.casbin.jcasbin.persist.FilteredAdapter;
 import org.casbin.jcasbin.persist.file_adapter.FilteredAdapter.Filter;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -16,6 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.casbin.jcasbin.main.CoreEnforcer.newModel;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * @author shy
@@ -26,7 +27,7 @@ import static org.casbin.jcasbin.main.CoreEnforcer.newModel;
  * @date 2020/12/24 18:10
  */
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class JdbcAdapterTest {
 
     @Resource
@@ -63,7 +64,7 @@ public class JdbcAdapterTest {
         // only policy rules that match the filter should be loaded,
         // so the result is different from the loadPolicyResult.
         this.filteredAdapter.loadFilteredPolicy(this.model, filter);
-        Assert.assertNotEquals(this.loadPolicyResult, this.model.savePolicyToText());
+        assertNotEquals(this.loadPolicyResult, this.model.savePolicyToText());
 
         init();
         getLoadPolicyResult();
@@ -82,7 +83,7 @@ public class JdbcAdapterTest {
         // there are no policy rules that match the filter,
         // so the result is same as the loadPolicyResult.
         this.filteredAdapter.loadFilteredPolicy(this.model, filter);
-        Assert.assertEquals(this.loadPolicyResult, this.model.savePolicyToText());
+        assertEquals(this.loadPolicyResult, this.model.savePolicyToText());
     }
 
     /**
@@ -96,7 +97,7 @@ public class JdbcAdapterTest {
 
         // the filter is null, so the result is same as the loadPolicyResult.
         this.filteredAdapter.loadFilteredPolicy(this.model, null);
-        Assert.assertEquals(this.loadPolicyResult, this.model.savePolicyToText());
+        assertEquals(this.loadPolicyResult, this.model.savePolicyToText());
     }
 
     /**

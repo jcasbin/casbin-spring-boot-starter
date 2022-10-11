@@ -7,10 +7,10 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 /**
  * @author fangzhengjin
@@ -44,7 +44,7 @@ public class FileUtils {
         File file = getFile(filePath);
         try {
             if (file != null && file.exists()) {
-                return new FileInputStream(file);
+                return Files.newInputStream(file.toPath());
             }
             Resource resource = new DefaultResourceLoader().getResource(filePath);
             if (resource.exists()) {

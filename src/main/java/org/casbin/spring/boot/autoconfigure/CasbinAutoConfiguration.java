@@ -60,7 +60,7 @@ public class CasbinAutoConfiguration {
     @ConditionalOnMissingBean
     public Adapter autoConfigFileAdapter(CasbinProperties properties) {
         // if the file storage is chosen and the policy file location is set correctly, then create a file adapter
-        if (!StringUtils.isEmpty(properties.getPolicy())) {
+        if (StringUtils.hasText(properties.getPolicy())) {
             try (InputStream policyInputStream = properties.getPolicyInputStream()) {
                 return new FileAdapter(policyInputStream);
             } catch (Exception ignored) {
