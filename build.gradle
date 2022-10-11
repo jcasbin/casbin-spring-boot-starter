@@ -1,7 +1,10 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 plugins {
-    id 'org.springframework.boot' version '2.3.5.RELEASE'
-    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
     id 'java'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.7.4' apply false
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -12,8 +15,10 @@ group = 'org.casbin'
 sourceCompatibility = '1.8'
 compileJava.options.encoding = 'UTF-8'
 
-bootJar.enabled = false
-jar.enabled = true
+jar {
+    enabled = true
+    archivesBaseName = 'casbin-spring-boot-starter'
+}
 
 repositories {
     mavenLocal()
@@ -26,17 +31,24 @@ configurations {
     }
 }
 
+dependencyManagement {
+    imports {
+        mavenBom SpringBootPlugin.BOM_COORDINATES
+    }
+}
+
 dependencies {
-    compileOnly 'org.casbin:jcasbin:1.21.0'
-    runtimeOnly 'com.h2database:h2:2.1.210'
+    compileOnly 'org.casbin:jcasbin:1.30.1'
+    compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
+    runtimeOnly 'com.h2database:h2:2.1.214'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.casbin:jcasbin-redis-watcher:1.4.1'
+    implementation 'org.casbin:jdbc-adapter:2.3.3'
+
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    testRuntimeOnly 'mysql:mysql-connector-java:5.1.47'
+    testRuntimeOnly 'mysql:mysql-connector-java:8.0.30'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    implementation 'org.casbin:jcasbin-redis-watcher:1.4.0'
-    implementation 'org.casbin:jdbc-adapter:2.3.0'
+    testImplementation 'org.assertj:assertj-core'
 }
