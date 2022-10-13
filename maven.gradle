@@ -10,11 +10,12 @@ ext {
 }
 
 task sourceJar(type: Jar) {
-    archiveClassifier = 'sources'
+    classifier = 'sources'
     from sourceSets.main.allSource
 }
 
 javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
     options {
         encoding "UTF-8"
         charSet 'UTF-8'
@@ -28,7 +29,7 @@ javadoc {
     }
 }
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier = 'javadoc'
+    classifier = 'javadoc'
     from javadoc.destinationDir
 }
 

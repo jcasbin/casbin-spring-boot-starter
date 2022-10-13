@@ -12,7 +12,7 @@ apply from: "maven.gradle"
 apply from: "jacoco.gradle"
 
 group = 'org.casbin'
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 compileJava.options.encoding = 'UTF-8'
 
 jar {
@@ -51,4 +51,8 @@ dependencies {
     testRuntimeOnly 'mysql:mysql-connector-java:8.0.30'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.assertj:assertj-core'
+}
+
+test {
+    useJUnitPlatform()
 }

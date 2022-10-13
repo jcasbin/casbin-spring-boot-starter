@@ -17,6 +17,7 @@ import java.util.List;
 import static org.casbin.jcasbin.main.CoreEnforcer.newModel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author shy
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
  */
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class JdbcAdapterTest {
+class JdbcAdapterTest {
 
     @Resource
     private FilteredAdapter filteredAdapter;
@@ -41,7 +42,7 @@ public class JdbcAdapterTest {
      * Test the loadFilteredPolicy function;
      */
     @Test
-    public void testLoadFilteredPolicy() {
+    void testLoadFilteredPolicy() {
         Filter filter = new Filter();
 
         List<String> rules;
@@ -90,7 +91,7 @@ public class JdbcAdapterTest {
      * Test the loadFilteredPolicy function with the empty filter;
      */
     @Test
-    public void testLoadFilteredPolicyEmptyFilter() {
+    void testLoadFilteredPolicyEmptyFilter() {
         init();
         getLoadPolicyResult();
         init();
@@ -104,16 +105,12 @@ public class JdbcAdapterTest {
      * Test the loadFilteredPolicy function with the invalid filter type;
      */
     @Test
-    public void testLoadFilteredPolicyInvalidFilterType() {
+     void testLoadFilteredPolicyInvalidFilterType() {
         init();
 
         // owing to the invalid filter type,this function should throw a CasbinAdapterException
         Object filter = new Object();
-        try {
-            this.filteredAdapter.loadFilteredPolicy(this.model, filter);
-        } catch (CasbinAdapterException casbinAdapterException) {
-            assert true;
-        }
+        assertThrows(CasbinAdapterException.class, () -> this.filteredAdapter.loadFilteredPolicy(this.model, filter));
     }
 
     /**

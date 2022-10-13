@@ -1,6 +1,5 @@
 package org.casbin;
 
-import org.assertj.core.api.Assert;
 import org.casbin.jcasbin.main.Enforcer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
