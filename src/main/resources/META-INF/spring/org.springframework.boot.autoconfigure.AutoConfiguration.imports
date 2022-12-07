@@ -1,0 +1,2 @@
+org.casbin.spring.boot.autoconfigure.CasbinAutoConfiguration
+org.casbin.spring.boot.autoconfigure.CasbinRedisWatcherAutoConfiguration
