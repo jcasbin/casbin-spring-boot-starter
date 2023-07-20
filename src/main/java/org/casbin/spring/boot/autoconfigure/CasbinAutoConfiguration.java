@@ -84,15 +84,24 @@ public class CasbinAutoConfiguration {
             DataSourceProperties dataSourceProperties
     ) throws Exception {
         JdbcTemplate jdbcTemplateToUse = getJdbcTemplate(jdbcTemplate, casbinDataSource);
+        if (jdbcTemplateToUse == null || jdbcTemplateToUse.getDataSource() == null) {
+            throw new CasbinAdapterException("Cannot create jdbc adapter, because jdbc template is not set");
+        }
         String databaseName = getDatabaseName(jdbcTemplateToUse.getDataSource());
         CasbinDataSourceInitializationMode initializeSchema = properties.getInitializeSchema();
         boolean autoCreateTable = initializeSchema == CasbinDataSourceInitializationMode.CREATE;
         String tableName = properties.getTableName();
         logger.info("Casbin current use database product: {}", databaseName);
-        return new JDBCAdapter(dataSourceProperties.determineDriverClassName(), dataSourceProperties.getUrl(),
-                dataSourceProperties.getUsername(), dataSourceProperties.getPassword(),
-                exceptionProperties.isRemovePolicyFailed(), tableName, autoCreateTable);
-
+        // datasource properties are configed
+        if (dataSourceProperties.getUrl() != null) {
+            return new JDBCAdapter(dataSourceProperties.determineDriverClassName(), dataSourceProperties.getUrl(),
+                    dataSourceProperties.getUsername(), dataSourceProperties.getPassword(),
+                    exceptionProperties.isRemovePolicyFailed(), tableName, autoCreateTable);
+        }
+        // when datasource properties are not configed, use the default datasource in jdbcTemplate
+        else {
+            return new JDBCAdapter(jdbcTemplateToUse.getDataSource(), exceptionProperties.isRemovePolicyFailed(), tableName, autoCreateTable);
+        }
     }
 
     /**
