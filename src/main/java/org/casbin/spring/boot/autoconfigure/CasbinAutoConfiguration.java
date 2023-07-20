@@ -98,7 +98,7 @@ public class CasbinAutoConfiguration {
                     dataSourceProperties.getUsername(), dataSourceProperties.getPassword(),
                     exceptionProperties.isRemovePolicyFailed(), tableName, autoCreateTable);
         }
-        // when datasource properties are not configed, use the default datasource in jdbcTemplate
+        // when datasource properties are not configured, use the default datasource in jdbcTemplate
         else {
             return new JDBCAdapter(jdbcTemplateToUse.getDataSource(), exceptionProperties.isRemovePolicyFailed(), tableName, autoCreateTable);
         }
