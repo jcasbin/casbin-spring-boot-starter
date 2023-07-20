@@ -93,15 +93,14 @@ public class CasbinAutoConfiguration {
         String tableName = properties.getTableName();
         logger.info("Casbin current use database product: {}", databaseName);
 
-        // when datasource properties are not configured, use the default datasource in jdbcTemplate
-
+        // datasource properties are configured
         if (dataSourceProperties.getUrl() != null) {
             return new JDBCAdapter(dataSourceProperties.determineDriverClassName(), dataSourceProperties.getUrl(),
                     dataSourceProperties.getUsername(), dataSourceProperties.getPassword(),
                     exceptionProperties.isRemovePolicyFailed(), tableName, autoCreateTable);
         }
 
-        // when datasource properties are not configed, use the default datasource in jdbcTemplate
+        // when datasource properties are not configured, use the default datasource in jdbcTemplate
         else {
             return new JDBCAdapter(jdbcTemplateToUse.getDataSource(), exceptionProperties.isRemovePolicyFailed(), tableName, autoCreateTable);
         }
