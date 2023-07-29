@@ -9,8 +9,6 @@
 
 [![](https://raw.githubusercontent.com/casbin/jcasbin/master/casbin-logo.png)](https://casbin.org)
 
-## English|[中文](https://github.com/jcasbin/casbin-spring-boot-starter/blob/master/README_CN.md)
-
 Casbin Spring Boot Starter is designed to help you easily integrate [jCasbin](https://github.com/casbin/jcasbin) into
 your Spring Boot project.
 
