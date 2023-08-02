@@ -47,7 +47,7 @@ import java.sql.DatabaseMetaData;
 @Configuration
 @EnableConfigurationProperties({CasbinProperties.class, CasbinExceptionProperties.class, DataSourceProperties.class})
 @AutoConfigureAfter({JdbcTemplateAutoConfiguration.class})
-@ConditionalOnExpression("${casbin.enableCasbin:true}")
+@ConditionalOnExpression("${casbin.enable-casbin:true}")
 public class CasbinAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(CasbinAutoConfiguration.class);
@@ -56,7 +56,7 @@ public class CasbinAutoConfiguration {
      * Automatic configuration file storage adapter
      */
     @Bean
-    @ConditionalOnProperty(name = "casbin.storeType", havingValue = "file")
+    @ConditionalOnProperty(name = "casbin.store-type", havingValue = "file")
     @ConditionalOnMissingBean
     public Adapter autoConfigFileAdapter(CasbinProperties properties) {
         // if the file storage is chosen and the policy file location is set correctly, then create a file adapter
@@ -73,7 +73,7 @@ public class CasbinAutoConfiguration {
      * Automatic configuration of JDBC adapter
      */
     @Bean
-    @ConditionalOnProperty(name = "casbin.storeType", havingValue = "jdbc", matchIfMissing = true)
+    @ConditionalOnProperty(name = "casbin.store-type", havingValue = "jdbc", matchIfMissing = true)
     @ConditionalOnBean(JdbcTemplate.class)
     @ConditionalOnMissingBean
     public Adapter autoConfigJdbcAdapter(
