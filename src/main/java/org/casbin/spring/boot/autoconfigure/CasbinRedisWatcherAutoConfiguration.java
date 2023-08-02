@@ -29,7 +29,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 @Configuration
 @EnableConfigurationProperties({CasbinProperties.class, RedisProperties.class})
 @AutoConfigureAfter({RedisAutoConfiguration.class, CasbinAutoConfiguration.class})
-@ConditionalOnExpression("'jdbc'.equalsIgnoreCase('${casbin.storeType:jdbc}') && ${casbin.enableWatcher:false} && 'redis'.equalsIgnoreCase('${casbin.watcherType:redis}') ")
+@ConditionalOnExpression("'jdbc'.equalsIgnoreCase('${casbin.store-type:jdbc}') && ${casbin.enable-watcher:false} && 'redis'.equalsIgnoreCase('${casbin.watcher-type:redis}') ")
 public class CasbinRedisWatcherAutoConfiguration {
 
     private final static Logger logger = LoggerFactory.getLogger(CasbinRedisWatcherAutoConfiguration.class);
@@ -37,9 +37,10 @@ public class CasbinRedisWatcherAutoConfiguration {
     @Bean
     @ConditionalOnBean(RedisTemplate.class)
     @ConditionalOnMissingBean
-    public Watcher redisWatcher(RedisProperties redisProperties, Enforcer enforcer) {
+    public Watcher redisWatcher(RedisProperties redisProperties, CasbinProperties casbinProperties, Enforcer enforcer) {
         int timeout = redisProperties.getTimeout() != null ? (int) redisProperties.getTimeout().toMillis() : 2000;
-        RedisWatcher watcher = new RedisWatcher(redisProperties.getHost(), redisProperties.getPort(), redisProperties.getClientName(), timeout, redisProperties.getPassword());
+        RedisWatcher watcher = new RedisWatcher(redisProperties.getHost(), redisProperties.getPort(),
+                casbinProperties.getPolicyTopic(), timeout, redisProperties.getPassword());
         enforcer.setWatcher(watcher);
         logger.info("Casbin set watcher: {}", watcher.getClass().getName());
         return watcher;
