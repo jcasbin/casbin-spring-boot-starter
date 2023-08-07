@@ -67,6 +67,10 @@ public class CasbinProperties {
      * Use default rbac configuration
      */
     private boolean useDefaultModelIfModelNotSetting = true;
+    /**
+     * Lettuce Redis Type. Default is none
+     */
+    private CasbinWatcherLettuceRedisType watcherLettuceRedisType = CasbinWatcherLettuceRedisType.NONE;
 
     public String getModelContext() {
         String text = FileUtils.getFileAsText(model);
@@ -181,5 +185,12 @@ public class CasbinProperties {
     public void setPolicyTopic(String policyTopic) {
         this.policyTopic = policyTopic;
     }
-}
 
+    public CasbinWatcherLettuceRedisType getWatcherLettuceRedisType() {
+        return watcherLettuceRedisType;
+    }
+
+    public void setWatcherLettuceRedisType(CasbinWatcherLettuceRedisType watcherLettuceRedisType) {
+        this.watcherLettuceRedisType = watcherLettuceRedisType;
+    }
+}

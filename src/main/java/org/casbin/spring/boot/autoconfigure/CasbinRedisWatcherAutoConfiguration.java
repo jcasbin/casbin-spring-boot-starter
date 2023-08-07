@@ -4,6 +4,7 @@ import org.casbin.jcasbin.main.Enforcer;
 import org.casbin.jcasbin.persist.Watcher;
 import org.casbin.spring.boot.autoconfigure.properties.CasbinProperties;
 import org.casbin.watcher.RedisWatcher;
+import org.casbin.watcher.lettuce.LettuceRedisWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -25,7 +26,6 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @description:
  * @date 2019-4-05 13:53
  */
-
 @Configuration
 @EnableConfigurationProperties({CasbinProperties.class, RedisProperties.class})
 @AutoConfigureAfter({RedisAutoConfiguration.class, CasbinAutoConfiguration.class})
@@ -37,10 +37,24 @@ public class CasbinRedisWatcherAutoConfiguration {
     @Bean
     @ConditionalOnBean(RedisTemplate.class)
     @ConditionalOnMissingBean
+    @ConditionalOnExpression("'redis'.equalsIgnoreCase('${casbin.watcher-type:redis}') && '${casbin.watcher-lettuce-redis-type:none}'.equalsIgnoreCase('none')")
     public Watcher redisWatcher(RedisProperties redisProperties, CasbinProperties casbinProperties, Enforcer enforcer) {
         int timeout = redisProperties.getTimeout() != null ? (int) redisProperties.getTimeout().toMillis() : 2000;
         RedisWatcher watcher = new RedisWatcher(redisProperties.getHost(), redisProperties.getPort(),
                 casbinProperties.getPolicyTopic(), timeout, redisProperties.getPassword());
+        enforcer.setWatcher(watcher);
+        logger.info("Casbin set watcher: {}", watcher.getClass().getName());
+        return watcher;
+    }
+
+    @Bean
+    @ConditionalOnBean(RedisTemplate.class)
+    @ConditionalOnMissingBean
+    @ConditionalOnExpression("'redis'.equalsIgnoreCase('${casbin.watcher-type:redis}') && ('${casbin.watcher-lettuce-redis-type:standalone}'.equalsIgnoreCase('standalone') || '${casbin.watcher-lettuce-redis-type:cluster}'.equalsIgnoreCase('cluster'))")
+    public Watcher lettuceRedisWatcher(RedisProperties redisProperties, CasbinProperties casbinProperties, Enforcer enforcer) {
+        int timeout = redisProperties.getTimeout() != null ? (int) redisProperties.getTimeout().toMillis() : 2000;
+        LettuceRedisWatcher watcher = new LettuceRedisWatcher(redisProperties.getHost(), redisProperties.getPort(),
+                casbinProperties.getPolicyTopic(), timeout, redisProperties.getPassword(), casbinProperties.getWatcherLettuceRedisType().name());
         enforcer.setWatcher(watcher);
         logger.info("Casbin set watcher: {}", watcher.getClass().getName());
         return watcher;
