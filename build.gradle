@@ -39,17 +39,18 @@ dependencyManagement {
 }
 
 dependencies {
-    api "org.casbin:jcasbin:1.35.0"
+    api 'org.casbin:jcasbin:1.35.0'
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
+    compileOnly 'org.casbin:jcasbin-redis-watcher:1.4.1'
     runtimeOnly 'com.h2database:h2:2.2.220'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.casbin:jcasbin-redis-watcher:1.4.2'
     implementation 'org.casbin:jdbc-adapter:2.4.1'
+    implementation 'org.casbin:jcasbin-lettuce-redis-watcher:1.0.0'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
     testRuntimeOnly 'mysql:mysql-connector-java:8.0.33'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.assertj:assertj-core'
 }

@@ -10,9 +10,9 @@ import java.io.InputStream;
 /**
  * @author fangzhengjin
  * @version V1.0
- * @title: CasbinProperties
+ * @title CasbinProperties
  * @package org.casbin.spring.boot.autoconfigure.properties
- * @description:
+ * @description
  * @date 2019/4/2 15:25
  */
 @ConfigurationProperties("casbin")

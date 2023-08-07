@@ -15,9 +15,9 @@ import java.nio.file.Files;
 /**
  * @author fangzhengjin
  * @version V1.0
- * @title: FileUtils
+ * @title FileUtils
  * @package org.casbin.utils
- * @description:
+ * @description
  * @date 2019/9/24 17:06
  */
 public class FileUtils {

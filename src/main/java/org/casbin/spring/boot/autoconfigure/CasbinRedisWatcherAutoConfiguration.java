@@ -21,9 +21,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 /**
  * @author fangzhengjin
  * @version V1.0
- * @title: CasbinRedisWatcherAutoConfiguration
+ * @title CasbinRedisWatcherAutoConfiguration
  * @package org.casbin.spring.boot.autoconfigure
- * @description:
+ * @description
  * @date 2019-4-05 13:53
  */
 @Configuration

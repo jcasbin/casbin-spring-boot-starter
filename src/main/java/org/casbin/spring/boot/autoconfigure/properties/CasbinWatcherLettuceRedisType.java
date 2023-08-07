@@ -3,9 +3,9 @@ package org.casbin.spring.boot.autoconfigure.properties;
 /**
  * @author shingmoyeung
  * @version V1.0
- * @title: CasbinWatcherLettuceRedisType
+ * @title CasbinWatcherLettuceRedisType
  * @package org.casbin.spring.boot.autoconfigure.properties
- * @description:
+ * @description
  * @date 2023/8/7 08:42
  */
 public enum CasbinWatcherLettuceRedisType {

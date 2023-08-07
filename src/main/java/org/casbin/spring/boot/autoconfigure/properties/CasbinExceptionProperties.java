@@ -5,9 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * @author fangzhengjin
  * @version V1.0
- * @title: CasbinExceptionProperties
+ * @title CasbinExceptionProperties
  * @package org.casbin.spring.boot.autoconfigure.properties
- * @description:
+ * @description
  * @date 2019/9/24 15:25
  */
 @ConfigurationProperties("casbin.exception")
