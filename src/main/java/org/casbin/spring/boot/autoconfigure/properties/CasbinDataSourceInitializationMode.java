@@ -3,9 +3,9 @@ package org.casbin.spring.boot.autoconfigure.properties;
 /**
  * @author fangzhengjin
  * @version V1.0
- * @title: CasbinDataSourceInitializationMode
+ * @title CasbinDataSourceInitializationMode
  * @package org.casbin.spring.boot.autoconfigure.properties
- * @description:
+ * @description
  * @date 2019/4/2 15:31
  */
 public enum CasbinDataSourceInitializationMode {

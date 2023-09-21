@@ -10,9 +10,9 @@ import java.io.InputStream;
 /**
  * @author fangzhengjin
  * @version V1.0
- * @title: CasbinProperties
+ * @title CasbinProperties
  * @package org.casbin.spring.boot.autoconfigure.properties
- * @description:
+ * @description
  * @date 2019/4/2 15:25
  */
 @ConfigurationProperties("casbin")
@@ -67,6 +67,10 @@ public class CasbinProperties {
      * Use default rbac configuration
      */
     private boolean useDefaultModelIfModelNotSetting = true;
+    /**
+     * Lettuce Redis Type. Default is none
+     */
+    private CasbinWatcherLettuceRedisType watcherLettuceRedisType = CasbinWatcherLettuceRedisType.NONE;
 
     public String getModelContext() {
         String text = FileUtils.getFileAsText(model);
@@ -181,5 +185,12 @@ public class CasbinProperties {
     public void setPolicyTopic(String policyTopic) {
         this.policyTopic = policyTopic;
     }
-}
 
+    public CasbinWatcherLettuceRedisType getWatcherLettuceRedisType() {
+        return watcherLettuceRedisType;
+    }
+
+    public void setWatcherLettuceRedisType(CasbinWatcherLettuceRedisType watcherLettuceRedisType) {
+        this.watcherLettuceRedisType = watcherLettuceRedisType;
+    }
+}

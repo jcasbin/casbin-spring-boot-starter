@@ -3,9 +3,9 @@ package org.casbin.exception;
 /**
  * @author fangzhengjin
  * @version V1.0
- * @title: CasbinPolicyConfigNotFoundException
+ * @title CasbinPolicyConfigNotFoundException
  * @package org.casbin.exception
- * @description:
+ * @description
  * @date 2019-4-05 14:46
  */
 public class CasbinPolicyConfigNotFoundException extends RuntimeException {

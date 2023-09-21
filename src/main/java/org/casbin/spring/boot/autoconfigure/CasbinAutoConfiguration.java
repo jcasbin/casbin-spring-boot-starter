@@ -38,9 +38,9 @@ import java.sql.DatabaseMetaData;
 /**
  * @author fangzhengjin
  * @version V1.0
- * @title: CasbinAutoConfiguration
+ * @title CasbinAutoConfiguration
  * @package org.casbin.spring.boot.autoconfigure
- * @description:
+ * @description
  * @date 2019-4-05 13:53
  */
 
@@ -54,6 +54,9 @@ public class CasbinAutoConfiguration {
 
     /**
      * Automatic configuration file storage adapter
+     *
+     * @param properties properties
+     * @return autoConfigFileAdapter
      */
     @Bean
     @ConditionalOnProperty(name = "casbin.store-type", havingValue = "file")
@@ -71,6 +74,14 @@ public class CasbinAutoConfiguration {
 
     /**
      * Automatic configuration of JDBC adapter
+     *
+     * @param casbinDataSource     casbinDataSource
+     * @param jdbcTemplate         jdbcTemplate
+     * @param properties           properties
+     * @param exceptionProperties  exceptionProperties
+     * @param dataSourceProperties dataSourceProperties
+     * @return Adapter
+     * @throws Exception exception
      */
     @Bean
     @ConditionalOnProperty(name = "casbin.store-type", havingValue = "jdbc", matchIfMissing = true)
@@ -106,6 +117,10 @@ public class CasbinAutoConfiguration {
 
     /**
      * Automatic configuration of the enforcer
+     *
+     * @param properties properties
+     * @param adapter    adapter
+     * @return Enforcer
      */
     @Bean
     @ConditionalOnMissingBean
@@ -144,6 +159,9 @@ public class CasbinAutoConfiguration {
 
     /**
      * Get the current database type
+     *
+     * @param dataSource dataSource
+     * @return String
      */
     private static String getDatabaseName(DataSource dataSource) {
         try {
@@ -161,6 +179,13 @@ public class CasbinAutoConfiguration {
         }
     }
 
+    /**
+     * Get the JdbcTemplate
+     *
+     * @param jdbcTemplate jdbcTemplate
+     * @param dataSource   dataSource
+     * @return JdbcTemplate
+     */
     private static JdbcTemplate getJdbcTemplate(JdbcTemplate jdbcTemplate, ObjectProvider<DataSource> dataSource) {
         DataSource dataSourceIfAvailable = dataSource.getIfAvailable();
         if (dataSourceIfAvailable != null) {
