@@ -61,14 +61,14 @@ public class CasbinRedisWatcherAutoConfiguration {
             logger.info("Casbin set watcher: {}", lettuceRedisWatcher.getClass().getName());
             return lettuceRedisWatcher;
         } else if (casbinProperties.getWatcherLettuceRedisType().name().equalsIgnoreCase("cluster")) {
-            LettuceRedisWatcher lettuceRedisWatcher = new LettuceRedisWatcher(redisProperties.getCluster().getNodes().toString(),
+            LettuceRedisWatcher lettuceRedisWatcher = new LettuceRedisWatcher(String.join(",", redisProperties.getCluster().getNodes()),
                     casbinProperties.getPolicyTopic(), timeout, redisProperties.getPassword());
             enforcer.setWatcher(lettuceRedisWatcher);
             logger.info("Casbin set watcher: {}", lettuceRedisWatcher.getClass().getName());
             return lettuceRedisWatcher;
         } else {
             // Unsupported watcher type. eg: sentinel etc.
-            throw new CasbinWatcherLettuceTypeUnsupportedException("Unsupported watcher type: " + casbinProperties.getWatcherLettuceRedisType());
+            throw new CasbinWatcherLettuceTypeUnsupportedException("Unsupported watcher type!");
         }
     }
 }

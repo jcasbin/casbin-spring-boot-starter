@@ -39,13 +39,13 @@ dependencyManagement {
 }
 
 dependencies {
-    api 'org.casbin:jcasbin:1.35.0'
+    api 'org.casbin:jcasbin:1.40.0'
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     compileOnly 'org.casbin:jcasbin-redis-watcher:1.4.1'
-    runtimeOnly 'com.h2database:h2:2.2.220'
+    runtimeOnly 'com.h2database:h2:2.2.224'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.casbin:jdbc-adapter:2.4.1'
-    implementation 'org.casbin:jcasbin-lettuce-redis-watcher:1.0.0'
+    implementation 'org.casbin:jdbc-adapter:2.5.0'
+    implementation 'org.casbin:jcasbin-lettuce-redis-watcher:1.1.0'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
