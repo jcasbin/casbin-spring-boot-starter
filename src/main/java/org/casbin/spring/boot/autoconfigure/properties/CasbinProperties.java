@@ -71,6 +71,7 @@ public class CasbinProperties {
      * Lettuce Redis Type. Default is none
      */
     private CasbinWatcherLettuceRedisType watcherLettuceRedisType = CasbinWatcherLettuceRedisType.NONE;
+    private boolean watcherTxSupport = false;
 
     public String getModelContext() {
         String text = FileUtils.getFileAsText(model);
@@ -192,5 +193,13 @@ public class CasbinProperties {
 
     public void setWatcherLettuceRedisType(CasbinWatcherLettuceRedisType watcherLettuceRedisType) {
         this.watcherLettuceRedisType = watcherLettuceRedisType;
+    }
+
+    public boolean isWatcherTxSupport() {
+        return watcherTxSupport;
+    }
+
+    public void setWatcherTxSupport(boolean watcherTxSupport) {
+        this.watcherTxSupport = watcherTxSupport;
     }
 }
