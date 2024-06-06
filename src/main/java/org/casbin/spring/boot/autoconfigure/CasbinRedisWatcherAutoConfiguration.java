@@ -12,11 +12,13 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -70,5 +72,16 @@ public class CasbinRedisWatcherAutoConfiguration {
             // Unsupported watcher type. eg: sentinel etc.
             throw new CasbinWatcherLettuceTypeUnsupportedException("Unsupported watcher type!");
         }
+    }
+
+    @Bean
+    @Primary
+    @ConditionalOnBean(Watcher.class)
+    @ConditionalOnProperty(value = "casbin.watcher-tx-support", havingValue = "true")
+    public Watcher txWatcher(Watcher watcher, Enforcer enforcer) {
+        TxWatcher txWatcher = new TxWatcher(watcher);
+        enforcer.setWatcher(txWatcher);
+        logger.info("TxWatcher proxy watcher: {}", watcher.getClass().getName());
+        return txWatcher;
     }
 }
