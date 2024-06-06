@@ -77,6 +77,9 @@ casbin:
   #CasbinWatcher notification mode, defaults to use Redis for notification synchronization, temporarily only supports Redis
   #After opening Watcher, you need to manually add spring-boot-starter-data-redis dependency.
   watcherType: redis
+  #Watcher to support spring tx, the default is not enable.
+  #If the mechanism is enabled, When updating policy in a spring transaction, watcher will trigger the update after commit
+  watcherTxSupport: false
   exception:
     ... See Schedule A for exception settings.
 ```
