@@ -72,6 +72,11 @@ public class CasbinProperties {
      */
     private CasbinWatcherLettuceRedisType watcherLettuceRedisType = CasbinWatcherLettuceRedisType.NONE;
 
+    /**
+     * Use {@link org.casbin.spring.boot.autoconfigure.TxWatcher} proxy, update after the transaction is committed
+     */
+    private boolean watcherTxSupport = false;
+
     public String getModelContext() {
         String text = FileUtils.getFileAsText(model);
         if (text == null) {
@@ -192,5 +197,13 @@ public class CasbinProperties {
 
     public void setWatcherLettuceRedisType(CasbinWatcherLettuceRedisType watcherLettuceRedisType) {
         this.watcherLettuceRedisType = watcherLettuceRedisType;
+    }
+
+    public boolean isWatcherTxSupport() {
+        return watcherTxSupport;
+    }
+
+    public void setWatcherTxSupport(boolean watcherTxSupport) {
+        this.watcherTxSupport = watcherTxSupport;
     }
 }
