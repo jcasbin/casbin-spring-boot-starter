@@ -12,13 +12,11 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -41,41 +39,36 @@ public class CasbinRedisWatcherAutoConfiguration {
     @ConditionalOnBean(RedisTemplate.class)
     @ConditionalOnMissingBean
     @ConditionalOnExpression("'redis'.equalsIgnoreCase('${casbin.watcher-type:redis}') && '${casbin.watcher-lettuce-redis-type:none}'.equalsIgnoreCase('none')")
-    public Watcher redisWatcher(RedisProperties redisProperties, CasbinProperties casbinProperties) {
+    public Watcher redisWatcher(RedisProperties redisProperties, CasbinProperties casbinProperties, Enforcer enforcer) {
         int timeout = redisProperties.getTimeout() != null ? (int) redisProperties.getTimeout().toMillis() : 2000;
-        return new RedisWatcher(redisProperties.getHost(), redisProperties.getPort(),
-            casbinProperties.getPolicyTopic(), timeout, redisProperties.getPassword());
+        RedisWatcher watcher = new RedisWatcher(redisProperties.getHost(), redisProperties.getPort(),
+                casbinProperties.getPolicyTopic(), timeout, redisProperties.getPassword());
+        enforcer.setWatcher(watcher);
+        logger.info("Casbin set watcher: {}", watcher.getClass().getName());
+        return watcher;
     }
 
     @Bean
     @ConditionalOnBean(RedisTemplate.class)
     @ConditionalOnMissingBean
     @ConditionalOnExpression("'redis'.equalsIgnoreCase('${casbin.watcher-type:redis}') && ('${casbin.watcher-lettuce-redis-type:standalone}'.equalsIgnoreCase('standalone') || '${casbin.watcher-lettuce-redis-type:cluster}'.equalsIgnoreCase('cluster'))")
-    public Watcher lettuceRedisWatcher(RedisProperties redisProperties, CasbinProperties casbinProperties) {
+    public Watcher lettuceRedisWatcher(RedisProperties redisProperties, CasbinProperties casbinProperties, Enforcer enforcer) {
         int timeout = redisProperties.getTimeout() != null ? (int) redisProperties.getTimeout().toMillis() : 2000;
         if (casbinProperties.getWatcherLettuceRedisType().name().equalsIgnoreCase("standalone")) {
-            return new LettuceRedisWatcher(redisProperties.getHost(), redisProperties.getPort(),
-                casbinProperties.getPolicyTopic(), timeout, redisProperties.getPassword());
+            LettuceRedisWatcher lettuceRedisWatcher = new LettuceRedisWatcher(redisProperties.getHost(), redisProperties.getPort(),
+                    casbinProperties.getPolicyTopic(), timeout, redisProperties.getPassword());
+            enforcer.setWatcher(lettuceRedisWatcher);
+            logger.info("Casbin set watcher: {}", lettuceRedisWatcher.getClass().getName());
+            return lettuceRedisWatcher;
         } else if (casbinProperties.getWatcherLettuceRedisType().name().equalsIgnoreCase("cluster")) {
-            return new LettuceRedisWatcher(String.join(",", redisProperties.getCluster().getNodes()),
-                casbinProperties.getPolicyTopic(), timeout, redisProperties.getPassword());
+            LettuceRedisWatcher lettuceRedisWatcher = new LettuceRedisWatcher(String.join(",", redisProperties.getCluster().getNodes()),
+                    casbinProperties.getPolicyTopic(), timeout, redisProperties.getPassword());
+            enforcer.setWatcher(lettuceRedisWatcher);
+            logger.info("Casbin set watcher: {}", lettuceRedisWatcher.getClass().getName());
+            return lettuceRedisWatcher;
         } else {
             // Unsupported watcher type. eg: sentinel etc.
             throw new CasbinWatcherLettuceTypeUnsupportedException("Unsupported watcher type!");
         }
     }
-
-    @Bean
-    @Primary
-    @ConditionalOnBean(Watcher.class)
-    @ConditionalOnProperty(value = "casbin.watcher-tx-support", havingValue = "true")
-    public Watcher txWatcher(Watcher watcher) {
-        return new TxWatcher(watcher);
-    }
-
-    @Bean
-    public WatcherInitializer watcherInitializer(Enforcer enforcer, Watcher watcher) {
-        return new WatcherInitializer(enforcer, watcher);
-    }
-
 }
