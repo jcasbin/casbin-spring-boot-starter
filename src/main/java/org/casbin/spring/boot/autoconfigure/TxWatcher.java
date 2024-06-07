@@ -10,9 +10,11 @@ import static org.springframework.transaction.support.TransactionSynchronization
 
 public class TxWatcher implements Watcher {
     private final Watcher watcher;
+    private final AfterCommitExecute afterCommitExecute;
 
     public TxWatcher(Watcher watcher) {
         this.watcher = watcher;
+        this.afterCommitExecute = new AfterCommitExecute(watcher);
     }
 
     @Override
@@ -28,13 +30,21 @@ public class TxWatcher implements Watcher {
     @Override
     public void update() {
         if (isActualTransactionActive()) {
-            registerSynchronization(new TransactionSynchronization() {
-                @Override
-                public void afterCommit() {
-                    watcher.update();
-                }
-            });
+            registerSynchronization(afterCommitExecute);
         } else {
+            watcher.update();
+        }
+    }
+
+    public static class AfterCommitExecute implements TransactionSynchronization {
+        private final Watcher watcher;
+
+        public AfterCommitExecute(Watcher watcher) {
+            this.watcher = watcher;
+        }
+
+        @Override
+        public void afterCommit() {
             watcher.update();
         }
     }
