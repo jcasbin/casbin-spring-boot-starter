@@ -1,0 +1,8 @@
+configs:
+  configList:
+    - name: test1
+      modelPath: ./src/main/resources/models/model1.conf
+      policyPath: ./src/main/resources/models/policy.csv
+    - name: test2
+      modelPath: ./src/main/resources/models/model1.conf
+      policyPath: ./src/main/resources/models/policy2.csv

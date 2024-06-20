@@ -45,11 +45,12 @@ dependencies {
     runtimeOnly 'com.h2database:h2:2.2.224'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation('org.casbin:jdbc-adapter:2.5.0') {
-        exclude group: 'org.casbin', module: 'jcasbin'
-    }
+        exclude group: 'org.casbin', module: 'jcasbin'}
     implementation 'org.casbin:jcasbin-lettuce-redis-watcher:1.1.0'
-
+    implementation 'org.yaml:snakeyaml:1.28'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+
 
     testRuntimeOnly 'mysql:mysql-connector-java:8.0.33'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
