@@ -52,6 +52,9 @@ casbin:
   enableCasbin: true
   #Whether to use thread-synchronized Enforcer, default false
   useSyncedEnforcer: false
+  #Whether to use distributed Enforcer, default false.
+  #If both useSyncedEnforcer and useDistributedEnforcer are set to true, useDistributedEnforcer will take effect.
+  useDistributedEnforcer: false
   #Whether to enable automatic policy saving, if the adapter supports this function, it is enabled by default.
   autoSave: true
   #Storage type [file, jdbc], currently supported jdbc database [mysql (mariadb), h2, oracle, postgresql, db2]
