@@ -4,6 +4,7 @@ import org.casbin.adapter.JDBCAdapter;
 import org.casbin.annotation.CasbinDataSource;
 import org.casbin.exception.CasbinAdapterException;
 import org.casbin.exception.CasbinModelConfigNotFoundException;
+import org.casbin.jcasbin.main.DistributedEnforcer;
 import org.casbin.jcasbin.main.Enforcer;
 import org.casbin.jcasbin.main.SyncedEnforcer;
 import org.casbin.jcasbin.model.Model;
@@ -147,7 +148,10 @@ public class CasbinAutoConfiguration {
             model.addDef("m", "m", "g(r.sub, p.sub) && r.obj == p.obj && r.act == p.act");
         }
         Enforcer enforcer;
-        if (properties.isUseSyncedEnforcer()) {
+        if (properties.isUseDistributedEnforcer()) {
+            enforcer = new DistributedEnforcer(model, adapter);
+            logger.info("Casbin use DistributedEnforcer");
+        } else if (properties.isUseSyncedEnforcer()) {
             enforcer = new SyncedEnforcer(model, adapter);
             logger.info("Casbin use SyncedEnforcer");
         } else {

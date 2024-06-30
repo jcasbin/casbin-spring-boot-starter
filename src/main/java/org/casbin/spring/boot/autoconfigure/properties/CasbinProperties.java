@@ -30,6 +30,10 @@ public class CasbinProperties {
      */
     private boolean useSyncedEnforcer = false;
     /**
+     * Whether to use a distributed Enforcer
+     */
+    private boolean useDistributedEnforcer = false;
+    /**
      * Local model file
      */
     private String model = "classpath:casbin/model.conf";
@@ -109,6 +113,14 @@ public class CasbinProperties {
 
     public void setUseSyncedEnforcer(boolean useSyncedEnforcer) {
         this.useSyncedEnforcer = useSyncedEnforcer;
+    }
+
+    public boolean isUseDistributedEnforcer() {
+        return useDistributedEnforcer;
+    }
+
+    public void setUseDistributedEnforcer(boolean useDistributedEnforcer) {
+        this.useDistributedEnforcer = useDistributedEnforcer;
     }
 
     public String getModel() {
