@@ -29,6 +29,7 @@ class EnforcerTest {
 
     @Test
     void test1() {
+        enforcer.clearPolicy();
         // user rights
         enforcer.addPolicy("alice", "data1", "read");
         enforcer.addPolicy("bob", "data2", "write");

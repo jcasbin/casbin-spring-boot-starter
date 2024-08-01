@@ -33,7 +33,7 @@ casbin:
 spring:
   # Although the data source is configured here, the custom data source is switched to H2 when the unit test is tested.
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/casbin?useSSL=false
     username: root
     password: casbin_test
