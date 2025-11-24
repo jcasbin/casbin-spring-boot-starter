@@ -13,8 +13,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,8 +30,8 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @date 2019-4-05 13:53
  */
 @Configuration
-@EnableConfigurationProperties({CasbinProperties.class, RedisProperties.class})
-@AutoConfigureAfter({RedisAutoConfiguration.class, CasbinAutoConfiguration.class})
+@EnableConfigurationProperties({CasbinProperties.class, DataRedisProperties.class})
+@AutoConfigureAfter({DataRedisAutoConfiguration.class, CasbinAutoConfiguration.class})
 @ConditionalOnExpression("'jdbc'.equalsIgnoreCase('${casbin.store-type:jdbc}') && ${casbin.enable-watcher:false} && 'redis'.equalsIgnoreCase('${casbin.watcher-type:redis}') ")
 public class CasbinRedisWatcherAutoConfiguration {
 
@@ -41,7 +41,7 @@ public class CasbinRedisWatcherAutoConfiguration {
     @ConditionalOnBean(RedisTemplate.class)
     @ConditionalOnMissingBean
     @ConditionalOnExpression("'redis'.equalsIgnoreCase('${casbin.watcher-type:redis}') && '${casbin.watcher-lettuce-redis-type:none}'.equalsIgnoreCase('none')")
-    public Watcher redisWatcher(RedisProperties redisProperties, CasbinProperties casbinProperties, Enforcer enforcer) {
+    public Watcher redisWatcher(DataRedisProperties redisProperties, CasbinProperties casbinProperties, Enforcer enforcer) {
         int timeout = redisProperties.getTimeout() != null ? (int) redisProperties.getTimeout().toMillis() : 2000;
         RedisWatcher watcher = new RedisWatcher(redisProperties.getHost(), redisProperties.getPort(),
                 casbinProperties.getPolicyTopic(), timeout, redisProperties.getPassword());
@@ -54,7 +54,7 @@ public class CasbinRedisWatcherAutoConfiguration {
     @ConditionalOnBean(RedisTemplate.class)
     @ConditionalOnMissingBean
     @ConditionalOnExpression("'redis'.equalsIgnoreCase('${casbin.watcher-type:redis}') && ('${casbin.watcher-lettuce-redis-type:standalone}'.equalsIgnoreCase('standalone') || '${casbin.watcher-lettuce-redis-type:cluster}'.equalsIgnoreCase('cluster'))")
-    public Watcher lettuceRedisWatcher(RedisProperties redisProperties, CasbinProperties casbinProperties, Enforcer enforcer) {
+    public Watcher lettuceRedisWatcher(DataRedisProperties redisProperties, CasbinProperties casbinProperties, Enforcer enforcer) {
         int timeout = redisProperties.getTimeout() != null ? (int) redisProperties.getTimeout().toMillis() : 2000;
         if (casbinProperties.getWatcherLettuceRedisType().name().equalsIgnoreCase("standalone")) {
             LettuceRedisWatcher lettuceRedisWatcher = new LettuceRedisWatcher(redisProperties.getHost(), redisProperties.getPort(),
