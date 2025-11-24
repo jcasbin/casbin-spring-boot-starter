@@ -1,4 +1,0 @@
-org/casbin/CasbinSpringBootStarterApplicationTest.class
-org/casbin/EnforcerTest.class
-org/casbin/adapter/JdbcAdapterTest.class
-org/casbin/config/CasbinDataSourceConfiguration.class

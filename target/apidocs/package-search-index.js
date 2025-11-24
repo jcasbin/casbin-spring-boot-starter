@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.casbin.annotation"},{"l":"org.casbin.exception"},{"l":"org.casbin.spring.boot.autoconfigure"},{"l":"org.casbin.spring.boot.autoconfigure.properties"},{"l":"org.casbin.utils"}];updateSearchResults();
