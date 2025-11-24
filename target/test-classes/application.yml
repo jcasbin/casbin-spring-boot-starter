@@ -1,0 +1,49 @@
+casbin:
+  # Whether to turn on Casbin, it is turned on by default
+  enable-casbin: true
+  # Whether to enable automatic saving of the policy, if the adapter supports this function, it is enabled by default
+  auto-save: true
+  # Storage type [file,jdbc], currently supported jdbc database [mysql(mariadb),h2,oracle,postgresql]
+  # Welcome to write and submit the jdbc adapter you are using, see: org.casbin.adapter.OracleAdapter
+  # The jdbc adapter will actively look for the data source information you configured in spring.datasource
+  # Use jdbc by default, and use the built-in h2 database for memory storage
+  store-type: jdbc
+  # Data source initialization strategy [create (automatically create a data table, if it has been created,
+  # then no longer initialize), never (always do not initialize)]
+  initialize-schema: create
+  # Local model configuration file address, agreed by default read location: classpath:casbin/model.conf
+  model: classpath:casbin/model.conf
+  # If the model configuration file is not found in the default location, and casbin.model is not set correctly,
+  # the built-in default rbac model is used, which takes effect by default
+  use-default-model-if-model-not-setting: true
+  # Local policy configuration file address, agreed by default read location: classpath:casbin/policy.csv
+  # If the configuration file is not found in the default location, an exception will be thrown
+  # This configuration item only takes effect when storeType is set to file
+  policy: classpath:casbin/policy.csv
+  # Whether to turn on the CasbinWatcher mechanism, it is not turned on by default
+  # If the mechanism is turned on, the storeType must be jdbc, otherwise the configuration is invalid
+  enable-watcher: true
+  # CasbinWatcher notification method, Redis is used by default for notification synchronization,
+  # and only Redis is supported for the time being
+  # After opening Watcher, you need to manually add spring-boot-starter-data-redis dependency
+  watcher-type: redis
+  # Add your Customer Topic here or it will go with 'CASBIN_POLICY_TOPIC' by default
+  policy-topic: 'YOUR_CUSTOMER_TOPIC'
+
+spring:
+  # Although the data source is configured here, the custom data source is switched to H2 when the unit test is tested.
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/casbin?useSSL=false
+    username: root
+    password: casbin_test
+  redis:
+    host: localhost
+    port: 6379
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: debug

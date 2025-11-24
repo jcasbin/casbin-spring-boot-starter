@@ -1,0 +1,5 @@
+org.casbin.annotation
+org.casbin.exception
+org.casbin.spring.boot.autoconfigure
+org.casbin.spring.boot.autoconfigure.properties
+org.casbin.utils
