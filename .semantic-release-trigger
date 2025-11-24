@@ -1,0 +1,6 @@
+# Semantic Release Trigger
+
+This file triggers a major version release via semantic-release.
+
+Upgrade: Spring Boot 2.7.12 -> 4.0.0
+Breaking: Requires Java 17+ (was Java 8)
